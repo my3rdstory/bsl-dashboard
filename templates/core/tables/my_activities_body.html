@@ -1,0 +1,38 @@
+{% load humanize %}
+{% for item in my_activities_with_no %}
+    {% with activity=item.row row_no=item.row_no %}
+        <tr
+            data-search-row
+            data-search-key="{{ activity.title }} {{ activity.content_html|striptags }} {{ activity.lightning_address }} {{ activity.get_status_display }}"
+        >
+            <td class="num-cell activity-no-col">{{ row_no|intcomma }}</td>
+            <td class="activity-title-cell">
+                <a class="activity-detail-link activity-title-preview-text" href="{% url 'core:staff-activity-detail' activity.id %}">
+                    {{ activity.title }}
+                </a>
+            </td>
+            <td class="activity-content-preview activity-content-col">
+                <a class="activity-detail-link activity-content-preview-text" href="{% url 'core:staff-activity-detail' activity.id %}">
+                    {{ activity.content_html|striptags }}
+                </a>
+            </td>
+            <td class="num-cell">{{ activity.amount_sats|intcomma }}</td>
+            <td class="mono-cell activity-lightning-address">{{ activity.lightning_address }}</td>
+            <td class="activity-status-col">
+                {% if activity.status == 'registered' %}
+                    <span class="tag activity-status-tag is-registered">등록</span>
+                {% elif activity.status == 'settlement_requested' %}
+                    <span class="tag activity-status-tag is-requested">정산요청</span>
+                {% elif activity.status == 'settlement_completed' %}
+                    <span class="tag activity-status-tag is-completed">정산완료</span>
+                {% else %}
+                    <span class="tag activity-status-tag">{{ activity.get_status_display }}</span>
+                {% endif %}
+            </td>
+            <td>{{ activity.created_at|date:'Y-m-d H:i:s' }}</td>
+        </tr>
+    {% endwith %}
+{% endfor %}
+<tr data-search-empty-row {% if my_activities_with_no %}hidden{% endif %}>
+    <td colspan="7" class="has-text-grey">등록한 활동이 없습니다.</td>
+</tr>

@@ -1,0 +1,6 @@
+{% for row in members_with_no %}
+    {% include 'core/partials/member_row.html' with member=row.member row_no=row.row_no %}
+{% endfor %}
+<tr data-search-empty-row {% if members_with_no %}hidden{% endif %}>
+    <td colspan="5" class="has-text-grey">현재 승인 대기 회원이 없습니다.</td>
+</tr>

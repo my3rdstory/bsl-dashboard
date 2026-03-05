@@ -1,0 +1,6 @@
+{% for row in members_with_no %}
+    {% include 'core/partials/member_list_row.html' with member=row.member row_no=row.row_no dues_amount_sats=row.dues_amount_sats is_due_requested=row.is_due_requested %}
+{% endfor %}
+<tr data-search-empty-row {% if members_with_no %}hidden{% endif %}>
+    <td colspan="{% if member_list_mode == 'dues-request' %}6{% else %}8{% endif %}" class="has-text-grey">{{ member_list_empty_text|default:'등록된 회원이 없습니다.' }}</td>
+</tr>

@@ -1,0 +1,17 @@
+{% load humanize %}
+<tr
+    data-search-row
+    data-search-key="{{ row.former_display_name }} {{ row.former_lightning_identifier }} {{ actor_label }} {{ row.withdraw_note }} {{ row.withdrawn_at|date:'Y-m-d H:i' }}"
+>
+    <td class="num-cell">{{ row_no|default:'-'|intcomma }}</td>
+    <td class="nickname-cell">
+        <div class="nickname-title-row">
+            <span>{{ row.former_display_name }}</span>
+        </div>
+        <div class="nickname-lightning mono-cell">({{ row.former_lightning_identifier }})</div>
+    </td>
+    <td>{{ row.signed_up_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+    <td>{{ row.withdrawn_at|date:'Y-m-d H:i:s' }}</td>
+    <td>{{ actor_label|default:'-' }}</td>
+    <td>{{ row.withdraw_note|default:'-' }}</td>
+</tr>

@@ -1,0 +1,108 @@
+{% if attempt.status == 'pending' %}
+<div
+    class="box compact-box"
+    hx-get="{% url 'core:lightning-login-poll' attempt.token %}"
+    hx-trigger="every 2s"
+    hx-target="#lightning-auth-panel"
+    hx-swap="innerHTML"
+>
+    <p class="has-text-grey mb-3 is-size-7 has-text-centered">라이트닝 지갑으로 QR을 스캔하고 인증을 완료하세요.</p>
+    <input id="panel-next-{{ attempt.token }}" type="hidden" name="next" value="{{ next_url|default:'/dashboard/' }}">
+    <figure class="image is-128x128 mb-3 auth-qr-wrap">
+        <img src="{{ qr_image_url }}" alt="라이트닝 인증 QR">
+    </figure>
+    <div class="mb-2">
+        <label class="label is-small has-text-centered">인증 코드 (LNURL-auth)</label>
+        <pre class="code-box" data-auth-code>{{ attempt.auth_invoice }}</pre>
+    </div>
+    <button class="button is-small is-link is-fullwidth mb-3 copy-auth-code-button" type="button">인증 코드 복사</button>
+    {% if debug_fake_enabled %}
+    <input
+        id="debug-wallet-key-{{ attempt.token }}"
+        class="input is-small mono-cell mb-2 debug-wallet-key-input"
+        type="text"
+        name="debug_wallet_key"
+        value="{{ debug_wallet_key|default:'' }}"
+        placeholder="DEBUG 지갑키 직접 입력 (선택)"
+        hx-preserve="true"
+    >
+    <button
+        class="button is-small is-warning is-fullwidth mb-3"
+        hx-post="{% url 'core:lightning-login-fake' attempt.token %}"
+        hx-include="#panel-next-{{ attempt.token }}, #debug-wallet-key-{{ attempt.token }}"
+        hx-target="#lightning-auth-panel"
+        hx-swap="innerHTML"
+        type="button"
+    >
+        DEBUG 페이크 인증
+    </button>
+    {% endif %}
+    <p class="is-size-7 has-text-grey has-text-centered">인증 상태 확인 중... {{ remaining_seconds|stringformat:"02d" }}초 남음...</p>
+</div>
+{% elif attempt.status == 'success' and attempt.require_nickname %}
+<div class="box compact-box">
+    <p class="is-size-7 has-text-grey mb-3 has-text-centered">최초 1회 인증입니다. 아래에 BSL 회원 닉네임을 입력해 주세요.</p>
+    <form
+        hx-post="{% url 'core:lightning-login-complete' attempt.token %}"
+        hx-target="#lightning-auth-panel"
+        hx-swap="innerHTML"
+    >
+        {% csrf_token %}
+        {{ nickname_form.non_field_errors }}
+        <div class="mb-2">
+            {{ nickname_form.nickname }}
+            {% for error in nickname_form.nickname.errors %}
+                <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <button class="button is-small is-link is-fullwidth" type="submit">닉네임 저장 후 다음 단계</button>
+    </form>
+</div>
+{% elif attempt.status == 'success' and not attempt.user_id %}
+<div class="box compact-box">
+    <div class="first-login-nickname-highlight mb-3">
+        <span class="first-login-nickname-label">닉네임</span>
+        <span class="first-login-nickname-tag">{{ first_login_nickname }}</span>
+        <span class="first-login-nickname-label">님에 대해 알려주세요.</span>
+    </div>
+    <p class="is-size-7 has-text-grey mb-3 has-text-centered">
+        회원가입 신청을 위해 자기소개와 검증용 소셜미디어 주소를 아래 텍스트 영역에 작성해 주세요.
+    </p>
+    <form
+        hx-post="{% url 'core:lightning-login-complete' attempt.token %}"
+        hx-target="#lightning-auth-panel"
+        hx-swap="innerHTML"
+    >
+        {% csrf_token %}
+        {{ application_form.non_field_errors }}
+        <div class="mb-2">
+            {{ application_form.application_note }}
+            {% for error in application_form.application_note.errors %}
+                <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <button class="button is-small is-link is-fullwidth" type="submit">자기소개 저장 후 신청 완료</button>
+    </form>
+</div>
+{% elif attempt.status == 'failed' or attempt.status == 'expired' %}
+<div class="box compact-box">
+    <input id="panel-next-{{ attempt.token }}" type="hidden" name="next" value="{{ next_url|default:'/dashboard/' }}">
+    <div
+        data-app-toast
+        data-toast-level="danger"
+        data-toast-persistent="true"
+    >
+        {{ attempt.failure_reason|default:'알 수 없는 오류' }}
+    </div>
+    <button
+        class="button is-small is-link is-fullwidth"
+        hx-post="{% url 'core:lightning-login-start' %}"
+        hx-include="#panel-next-{{ attempt.token }}"
+        hx-target="#lightning-auth-panel"
+        hx-swap="innerHTML"
+        type="button"
+    >
+        인증 화면 새로고침
+    </button>
+</div>
+{% endif %}

@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 | BSL 백오피스</title>
+    <link rel="icon" type="image/png" href="{% static 'img/bsl-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bulma/bulma.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+    <script src="{% static 'js/app-toast.js' %}" defer></script>
+    <script src="{% static 'js/lightning-auth.js' %}" defer></script>
+</head>
+<body class="auth-page" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <section class="auth-card">
+        <div class="auth-brand">
+            <img src="{% static 'img/bsl-logo.png' %}" alt="BSL 로고">
+            <p>Bitcoin Social Layer</p>
+        </div>
+        <p class="auth-guide">라이트닝 로그인으로만 접속할 수 있습니다.</p>
+        <div class="auth-actions" hx-include="#login-next-input">
+            <input id="login-next-input" type="hidden" name="next" value="{{ next_url|default:'/dashboard/' }}">
+            <button
+                class="button is-link is-small"
+                hx-post="{% url 'core:lightning-login-start' %}"
+                hx-target="#lightning-auth-panel"
+                hx-swap="innerHTML"
+                type="button"
+            >
+                라이트닝 로그인 시작
+            </button>
+        </div>
+        <div id="lightning-auth-panel" class="auth-panel"></div>
+    </section>
+</body>
+</html>

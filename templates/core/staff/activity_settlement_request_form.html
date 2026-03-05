@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}활동 정산요청{% endblock %}
+
+{% block content %}
+<section class="box compact-box activity-form-box">
+    <h2 class="title is-5 mb-1">활동 정산요청</h2>
+    <p class="is-size-7 has-text-grey mb-4">
+        기존 활동 내용을 확인한 뒤 결과 내용과 근거 첨부를 등록해 정산요청을 제출합니다.
+    </p>
+
+    <div class="table-container mb-4">
+        <table class="table is-fullwidth is-size-7 compact-table activity-detail-info-table">
+            <tbody>
+                <tr>
+                    <th>제목</th>
+                    <td>{{ activity.title }}</td>
+                </tr>
+                <tr>
+                    <th>활동 내용 요약</th>
+                    <td class="activity-settlement-summary">{{ activity.content_html|striptags }}</td>
+                </tr>
+                <tr>
+                    <th>활동비(sats)</th>
+                    <td class="mono-cell">{{ activity.amount_sats|intcomma }}</td>
+                </tr>
+                <tr>
+                    <th>라이트닝 주소</th>
+                    <td class="mono-cell activity-lightning-address">{{ activity.lightning_address }}</td>
+                </tr>
+                <tr>
+                    <th>기존 첨부</th>
+                    <td>
+                        {% if activity_attachments %}
+                            <div class="activity-attachment-list">
+                                {% for attachment in activity_attachments %}
+                                    <a class="activity-attachment-link" href="{% url 'core:staff-activity-attachment-download' attachment.id %}">
+                                        {{ attachment.original_filename }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <span class="has-text-grey">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        data-activity-settlement-request-form-root
+        data-max-files="{{ max_attachments }}"
+        data-max-size-bytes="{{ max_attachment_size_bytes }}"
+        data-max-content-chars="{{ max_content_chars }}"
+    >
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="help is-danger mb-2">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="field">
+            <label class="label is-size-7">결과 내용</label>
+            <div class="activity-editor" data-activity-settlement-result-editor></div>
+            {{ form.result_content_html }}
+            <p class="help is-size-7">Quill 에디터로 작성, 필수 (최대 {{ max_content_chars|intcomma }}자)</p>
+            <p class="help is-size-7"><span data-result-char-count>0</span> / {{ max_content_chars|intcomma }}자</p>
+            <p class="help is-danger is-hidden" data-result-content-error>결과 내용을 입력해 주세요.</p>
+            {% if form.result_content_html.errors %}
+                <p class="help is-danger">{{ form.result_content_html.errors|join:', ' }}</p>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label class="label is-size-7" for="settlement-attachments">근거 첨부파일</label>
+            <div class="activity-file-dropzone" data-settlement-file-dropzone tabindex="0">
+                <p class="mb-1">파일을 이곳에 드래그&드롭하거나 클릭해 선택하세요.</p>
+                <p class="is-size-7 has-text-grey mb-0">최대 {{ max_attachments }}개, 파일당 {{ max_attachment_size_mb }}MB</p>
+            </div>
+            <input
+                id="settlement-attachments"
+                name="attachments"
+                type="file"
+                class="activity-file-input"
+                data-settlement-file-input
+                multiple
+            >
+            <p class="help is-danger is-hidden" data-settlement-file-error></p>
+            <ul class="activity-file-list" data-settlement-file-list></ul>
+        </div>
+
+        <div class="activity-form-actions mt-2">
+            <a class="button is-small" href="{% url 'core:staff-activity-detail' activity.id %}">목록으로</a>
+            <button class="button is-small activity-submit-button" type="submit">정산요청</button>
+        </div>
+    </form>
+</section>
+<link rel="stylesheet" href="{% static 'vendor/quill/quill.snow.css' %}">
+<script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+<script src="{% static 'js/activity-settlement-request-form.js' %}" defer></script>
+{% endblock %}

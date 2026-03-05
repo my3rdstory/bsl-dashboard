@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block title %}기본 설정{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">기본 설정</h2>
+    <p class="is-size-7 has-text-grey mb-4">하나의 메뉴에서 회비설정과 월회비 차감 계획을 관리합니다.</p>
+
+    <div class="box compact-box mb-4">
+        <h3 class="title is-6 mb-3">회비설정</h3>
+        <p class="is-size-7 has-text-grey mb-3">
+            회비는 입력한 연도와 금액을 기준으로 계산됩니다.
+            종료연도를 지정하면 해당 연도까지 현재 회비를 유지하고, 다음 연도부터 변경 회비를 자동 적용합니다.
+        </p>
+        <div class="basic-settings-form-wrap">
+            <form method="post">
+                {% csrf_token %}
+                <div class="columns is-variable is-2 setting-inline-row">
+                    <div class="column is-4-desktop is-12-mobile">
+                        <div class="field">
+                            <label class="label is-size-7" for="{{ form.annual_dues_sats.id_for_label }}">회비설정 (sats)</label>
+                            {{ form.annual_dues_sats }}
+                            <p class="help is-size-7">숫자만 입력</p>
+                            {% if form.annual_dues_sats.errors %}
+                                <p class="help is-danger">{{ form.annual_dues_sats.errors|join:', ' }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-12-mobile">
+                        <div class="field">
+                            <label class="label is-size-7" for="{{ form.configured_year.id_for_label }}">연도 설정</label>
+                            {{ form.configured_year }}
+                            <p class="help is-size-7">숫자만 입력</p>
+                            {% if form.configured_year.errors %}
+                                <p class="help is-danger">{{ form.configured_year.errors|join:', ' }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-12-mobile">
+                        <div class="field">
+                            <label class="label is-size-7" for="{{ form.end_year.id_for_label }}">종료연도</label>
+                            <div class="select is-small is-fullwidth">
+                                {{ form.end_year }}
+                            </div>
+                            <p class="help mb-1">제한없음이 기본값입니다.</p>
+                            <p class="help mb-2">종료연도를 지정하면 해당 연도까지 현재 회비를 유지합니다.</p>
+                            {% if form.end_year.errors %}
+                                <p class="help is-danger">{{ form.end_year.errors|join:', ' }}</p>
+                            {% endif %}
+                            <div
+                                data-next-dues-field
+                                class="{% if not form.end_year.value and not form.next_annual_dues_sats.errors %}is-hidden{% endif %}"
+                            >
+                                <label class="label is-size-7 mt-2" for="{{ form.next_annual_dues_sats.id_for_label }}">종료 후 변경 회비 (sats)</label>
+                                {{ form.next_annual_dues_sats }}
+                                <p class="help">종료연도를 설정한 경우 필수입니다. 종료연도 다음 해부터 적용됩니다.</p>
+                                {% if form.next_annual_dues_sats.errors %}
+                                    <p class="help is-danger">{{ form.next_annual_dues_sats.errors|join:', ' }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons are-small mb-0">
+                    <button class="button is-success is-small" type="submit">저장</button>
+                </div>
+            </form>
+        </div>
+        <p class="is-size-7 has-text-grey mt-3 mb-0">
+            현재 설정: 연 {{ current_setting.annual_dues_sats|default:0|intcomma }} sats /
+            적용연도 {{ current_setting.configured_year|default:"-" }} /
+            종료연도 {% if current_setting.end_year %}{{ current_setting.end_year }}{% else %}제한없음{% endif %}
+        </p>
+        {% if dues_transition %}
+            <p class="is-size-7 has-text-grey mt-2 mb-0">
+                연 {{ dues_transition.current_amount_sats|intcomma }} sats는 {{ dues_transition.current_until_year }}년까지 유지되고,
+                {{ dues_transition.next_from_year }}년부터 연 {{ dues_transition.next_amount_sats|intcomma }} sats로 변경됩니다.
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="box compact-box mb-0">
+        <h3 class="title is-6 mb-2">월회비 차감 계획</h3>
+        <p class="is-size-7 has-text-grey mb-3">
+            1월은 연회비 전액을 적용하고, 2월부터는 전월 적용 회비에서 연회비 ÷ 12(사토시 정수 올림) 금액을 누적 차감합니다.
+            (월 차감 기준 {{ monthly_due_sats|default:0|intcomma }} sats)
+        </p>
+        <div class="table-container">
+            <table class="table is-fullwidth is-size-7 compact-table member-list-table">
+                <thead>
+                    <tr>
+                        <th class="num-cell">No.</th>
+                        <th class="num-cell">월</th>
+                        <th>청구 시작일</th>
+                        <th class="num-cell">전월 기준금액</th>
+                        <th class="num-cell">월 차감액</th>
+                        <th class="num-cell">해당월 적용 회비</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in monthly_plan_rows %}
+                        <tr>
+                            <td class="num-cell">{{ forloop.counter|intcomma }}</td>
+                            <td class="num-cell">{{ row.month|intcomma }}월</td>
+                            <td>{{ row.due_date|date:'Y-m-d' }}</td>
+                            <td class="mono-cell num-cell">{{ row.base_fee_sats|intcomma }} sats</td>
+                            <td class="mono-cell num-cell">{{ row.planned_deduction_sats|intcomma }} sats</td>
+                            <td class="mono-cell num-cell">{{ row.applied_fee_sats|intcomma }} sats</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="has-text-grey">차감 계획이 없습니다.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<script src="{% static 'js/settings-basic.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% if attempt.status == 'pending' %}
+<div
+    class="box compact-box"
+    hx-get="{% url 'core:my-withdraw-auth-poll' attempt.token %}"
+    hx-trigger="every 2s"
+    hx-target="#member-withdraw-auth-panel"
+    hx-swap="innerHTML"
+>
+    <p class="has-text-grey mb-3 is-size-7 has-text-centered">탈퇴 확인을 위해 라이트닝 지갑으로 1회 재인증해 주세요.</p>
+    <figure class="image is-128x128 mb-3 auth-qr-wrap">
+        <img src="{{ qr_image_url }}" alt="탈퇴 재인증 QR">
+    </figure>
+    <div class="mb-2">
+        <label class="label is-small has-text-centered">인증 코드 (LNURL-auth)</label>
+        <pre class="code-box" data-auth-code>{{ attempt.auth_invoice }}</pre>
+    </div>
+    <button class="button is-small is-link is-fullwidth mb-3 copy-auth-code-button" type="button">인증 코드 복사</button>
+    {% if debug_fake_enabled %}
+    <input
+        id="member-withdraw-debug-wallet-{{ attempt.token }}"
+        class="input is-small mono-cell mb-2 debug-wallet-key-input"
+        type="text"
+        name="debug_wallet_key"
+        value="{{ debug_wallet_key|default:'' }}"
+        placeholder="DEBUG 지갑키 직접 입력 (선택)"
+        hx-preserve="true"
+    >
+    <button
+        class="button is-small is-warning is-fullwidth mb-3"
+        hx-post="{% url 'core:my-withdraw-auth-fake' attempt.token %}"
+        hx-include="#member-withdraw-debug-wallet-{{ attempt.token }}"
+        hx-target="#member-withdraw-auth-panel"
+        hx-swap="innerHTML"
+        type="button"
+    >
+        DEBUG 페이크 인증
+    </button>
+    {% endif %}
+    <p class="is-size-7 has-text-grey has-text-centered">인증 상태 확인 중... {{ remaining_seconds|stringformat:"02d" }}초 남음...</p>
+</div>
+{% elif attempt.status == 'success' and is_wallet_matched %}
+<div class="box compact-box">
+    <p class="is-size-7 has-text-success mb-2">라이트닝 재인증이 완료되었습니다.</p>
+    <p class="is-size-7 has-text-grey mb-3">확인된 라이트닝 ID: <span class="mono-cell">{{ attempt.wallet_key }}</span></p>
+    <div class="notification is-warning is-light member-withdraw-warning-box mb-3">
+        <p class="is-size-7 mb-1">아래 항목을 확인해 주세요.</p>
+        <ul class="is-size-7 member-withdraw-warning-list">
+            <li>탈퇴 처리 즉시 회원 계정과 인증 정보가 삭제됩니다.</li>
+            <li>활동 등록/정산/회비 납부 및 요청 데이터가 모두 삭제됩니다.</li>
+            <li>탈퇴 이력 기록만 별도 테이블에 보존됩니다.</li>
+        </ul>
+    </div>
+    <form method="post" action="{% url 'core:my-withdraw-execute' %}">
+        {% csrf_token %}
+        <input type="hidden" name="attempt_token" value="{{ attempt.token }}">
+        <label class="checkbox is-size-7 mb-3 is-flex is-align-items-flex-start">
+            <input type="checkbox" name="confirm_delete" required>
+            <span class="ml-2">위 안내를 확인했고, 탈퇴 시 데이터가 즉시 삭제됨에 동의합니다.</span>
+        </label>
+        <button class="button is-danger is-small" type="submit">회원 탈퇴</button>
+    </form>
+</div>
+{% elif attempt.status == 'success' and not is_wallet_matched %}
+<div class="box compact-box">
+    <p class="has-text-danger mb-2 is-size-7">인증된 라이트닝 ID가 현재 계정과 일치하지 않습니다.</p>
+    <p class="is-size-7 has-text-grey mb-1">현재 계정 라이트닝 ID: <span class="mono-cell">{{ member.lightning_identifier }}</span></p>
+    <p class="is-size-7 has-text-grey mb-3">인증된 라이트닝 ID: <span class="mono-cell">{{ attempt.wallet_key|default:'-' }}</span></p>
+    <button
+        class="button is-small is-link"
+        hx-post="{% url 'core:my-withdraw-auth-start' %}"
+        hx-target="#member-withdraw-auth-panel"
+        hx-swap="innerHTML"
+        type="button"
+    >
+        다시 인증
+    </button>
+</div>
+{% elif attempt.status == 'failed' or attempt.status == 'expired' %}
+<div class="box compact-box">
+    <p class="has-text-danger mb-2 is-size-7">인증 실패: {{ attempt.failure_reason|default:'알 수 없는 오류' }}</p>
+    <button
+        class="button is-small is-link"
+        hx-post="{% url 'core:my-withdraw-auth-start' %}"
+        hx-target="#member-withdraw-auth-panel"
+        hx-swap="innerHTML"
+        type="button"
+    >
+        인증 다시 시작
+    </button>
+</div>
+{% endif %}

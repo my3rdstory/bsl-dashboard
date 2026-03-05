@@ -1,0 +1,52 @@
+{% load humanize %}
+{% for item in activity_settlement_rows %}
+    {% with activity=item.activity row_no=item.row_no %}
+    <tr
+        data-search-row
+        data-search-key="{{ activity.title }} {{ activity.settlement_result_html|striptags|default:'' }} {{ activity.member.display_name }} {{ activity.member.lightning_identifier }} {{ activity.lightning_address }}"
+    >
+        <td class="num-cell activity-no-col">{{ row_no|intcomma }}</td>
+        <td class="activity-title-cell">
+            <a class="activity-detail-link activity-title-preview-text" href="{% url 'core:staff-settlement-detail' activity.id %}">
+                {{ activity.title }}
+            </a>
+        </td>
+        <td class="activity-content-preview activity-content-col">
+            <a class="activity-detail-link activity-content-preview-text" href="{% url 'core:staff-settlement-detail' activity.id %}">
+                {{ activity.settlement_result_html|striptags|default:'-' }}
+            </a>
+        </td>
+        <td class="nickname-cell activity-nickname-col">
+            <a class="member-detail-link" href="{% url 'core:staff-member-detail' activity.member.id %}">
+                <div class="nickname-title-row">
+                    <span>{{ activity.member.display_name }}</span>
+                    {% if activity.member.is_backoffice_admin %}
+                        {% include 'core/components/backoffice_admin_badge_icon.html' %}
+                    {% endif %}
+                </div>
+                <div class="nickname-lightning mono-cell">({{ activity.member.lightning_identifier }})</div>
+            </a>
+        </td>
+        <td class="num-cell">{{ activity.amount_sats|intcomma }}</td>
+        <td class="mono-cell activity-lightning-address">{{ activity.lightning_address }}</td>
+        <td>{{ activity.settlement_requested_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+        <td class="activity-status-col">
+            {% if activity.status == 'registered' %}
+                <span class="tag activity-status-tag is-registered">등록</span>
+            {% elif activity.status == 'settlement_requested' %}
+                <span class="tag activity-status-tag is-requested">정산요청</span>
+            {% elif activity.status == 'settlement_completed' %}
+                <span class="tag activity-status-tag is-completed">정산완료</span>
+            {% else %}
+                <span class="tag activity-status-tag">{{ activity.get_status_display }}</span>
+            {% endif %}
+        </td>
+        <td>
+            <span class="has-text-grey">-</span>
+        </td>
+    </tr>
+    {% endwith %}
+{% endfor %}
+<tr data-search-empty-row {% if activity_settlement_rows %}hidden{% endif %}>
+    <td colspan="9" class="has-text-grey">정산요청 활동이 없습니다.</td>
+</tr>

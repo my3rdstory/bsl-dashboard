@@ -1,0 +1,39 @@
+<div class="modal" data-reject-modal>
+    <div class="modal-background" data-close-reject-modal></div>
+    <div class="modal-card approve-modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">회원 반려</p>
+            <button class="delete" aria-label="close" type="button" data-close-reject-modal></button>
+        </header>
+        <form method="post" data-reject-form>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next_path|default:request.path }}">
+            <section class="modal-card-body">
+                <p class="is-size-7 has-text-grey mb-3">대상: <strong data-reject-member-label>-</strong></p>
+                <div class="field">
+                    <label class="label is-size-7">날짜임의지정</label>
+                    <div class="first-check-control">
+                        <input
+                            class="input is-small first-check-input"
+                            type="text"
+                            name="first_reviewed_at"
+                            data-reject-first-reviewed-at
+                            placeholder="YYYY-MM-DDTHH:MM:SS"
+                        >
+                        <button type="button" class="first-check-icon-button" data-open-datetime-picker aria-label="날짜/시간 선택">
+                            <span class="first-check-icon" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="field mb-0">
+                    <label class="label is-size-7">반려근거</label>
+                    <textarea class="textarea is-small" rows="4" name="review_note" data-reject-note required></textarea>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-small" type="button" data-close-reject-modal>취소</button>
+                <button class="button is-danger is-small" type="submit">반려 완료</button>
+            </footer>
+        </form>
+    </div>
+</div>

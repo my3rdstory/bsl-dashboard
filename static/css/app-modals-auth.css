@@ -1,0 +1,103 @@
+.approve-modal-card {
+    width: min(92vw, 620px);
+}
+
+.approve-modal-card .modal-card-head,
+.approve-modal-card .modal-card-foot {
+    background: #121920;
+    border-color: #2c3945;
+}
+
+.approve-modal-card .modal-card-foot {
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.approve-modal-card .modal-card-title {
+    color: #dbe6ef;
+}
+
+.approve-modal-card .modal-card-body {
+    background: #0f151b;
+    color: #d5e0e8;
+}
+
+.approve-modal-card .label {
+    color: #cfdce6;
+}
+
+.approve-modal-card .textarea {
+    background: #1a232c !important;
+    color: #d5e0e8 !important;
+    border: 1px solid #334554 !important;
+}
+
+.approve-modal-card .modal-card-foot .button {
+    min-width: 5.25rem;
+    border-width: 1px !important;
+}
+
+.approve-modal-card .modal-card-foot .button.is-success {
+    background: #2d8a4e !important;
+    border-color: #48b26d !important;
+    color: #f4fff7 !important;
+}
+
+.approve-modal-card .modal-card-foot .button.is-success:hover {
+    background: #35a05a !important;
+    border-color: #63c986 !important;
+}
+
+.approve-modal-card .modal-card-foot .button.is-danger {
+    background: #7f3232 !important;
+    border-color: #a14a4a !important;
+    color: #fff4f4 !important;
+}
+
+.approve-modal-card .modal-card-foot .button.is-danger:hover {
+    background: #934040 !important;
+    border-color: #b85f5f !important;
+}
+
+.approve-modal-card [data-approve-member-label],
+.approve-modal-card [data-reject-member-label],
+.approve-modal-card [data-withdraw-member-label] {
+    display: block;
+    margin-top: 0.22rem;
+    color: #edf5fb !important;
+    line-height: 1.4;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+}
+
+.auth-panel .label {
+    color: #cdd9e2 !important;
+}
+
+.auth-panel .code-box {
+    margin: 0;
+    padding: 0.7rem 0.75rem;
+    border: 1px solid #344756;
+    background: #17212a !important;
+    color: #dce7ef !important;
+    border-radius: 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.auth-panel .debug-wallet-key-input {
+    background: #151f28 !important;
+    border-color: #355063 !important;
+    color: #dbe8f2 !important;
+}
+
+.auth-panel .debug-wallet-key-input::placeholder {
+    color: #8ea4b4 !important;
+}
+
+.auth-panel .debug-wallet-key-input:focus {
+    border-color: #4d7392 !important;
+    box-shadow: 0 0 0 0.1rem rgba(77, 115, 146, 0.25) !important;
+}

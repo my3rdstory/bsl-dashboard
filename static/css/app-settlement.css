@@ -1,0 +1,90 @@
+.content-pane .tag.activity-status-tag.is-registered {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    line-height: 1.35 !important;
+    display: inline !important;
+    color: #d6ebff !important;
+}
+
+.button.activity-request-action-button {
+    min-width: 5.6rem;
+    font-weight: 700;
+    background: #2ea65f !important;
+    border: 1px solid #4ec77f !important;
+    color: #f4fff8 !important;
+}
+
+.button.activity-request-action-button:hover {
+    background: #36bd6d !important;
+    border-color: #69da96 !important;
+    color: #ffffff !important;
+}
+
+.button.activity-process-button {
+    min-width: 5.8rem;
+    font-weight: 700;
+    background: #b96b1b !important;
+    border: 1px solid #d88a33 !important;
+    color: #fff5e8 !important;
+}
+
+.button.activity-process-button:hover {
+    background: #cb7a24 !important;
+    border-color: #e49a4b !important;
+    color: #ffffff !important;
+}
+
+.settlement-logbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 70;
+    border-top: 1px solid #3e5366;
+    background: #0f1821;
+    box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.35);
+    padding: 0.65rem 0.9rem 0.8rem;
+}
+
+.settlement-logbar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.48rem;
+}
+
+.settlement-logbar-head strong {
+    color: #e5eff8;
+    font-size: 0.86rem;
+}
+
+.settlement-logbar-body {
+    max-height: 9.5rem;
+    overflow-y: auto;
+    border: 1px solid #304457;
+    background: #121f2a;
+    padding: 0.5rem 0.62rem;
+}
+
+.settlement-logbar-line {
+    margin: 0 0 0.2rem;
+    font-family: "Space Grotesk", "IBM Plex Sans KR", monospace;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: #d4e3f1;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.settlement-logbar-line.is-error {
+    color: #ffb5bf;
+}
+
+.settlement-logbar-line.is-success {
+    color: #aef3c7;
+}

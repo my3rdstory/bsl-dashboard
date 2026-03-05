@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}반려 회원{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">반려 회원</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        가입 신청이 반려된 회원만 모아 확인합니다.
+        현재 {{ rejected_total_count|default:0|intcomma }}명입니다.
+    </p>
+
+    {% include 'core/components/searchable_table.html' with table_head_template='core/staff/tables/members_rejected_head.html' table_body_template='core/staff/tables/members_rejected_body.html' search_placeholder='닉네임 또는 라이트닝 ID 검색' %}
+</section>
+{% endblock %}

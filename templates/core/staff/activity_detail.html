@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ detail_page_title|default:'활동 상세' }}{% endblock %}
+
+{% block content %}
+<section class="box compact-box mb-4">
+    <h2 class="title is-5 mb-1">{{ detail_page_title|default:'활동 상세' }}</h2>
+    <p class="is-size-7 has-text-grey mb-3">{{ detail_page_description|default:'등록된 활동의 상세 내용과 첨부를 확인합니다.' }}</p>
+
+    <div class="tags mb-2">
+        <span class="tag activity-detail-meta-tag">{{ activity.member.display_name }}</span>
+        <span class="tag activity-detail-meta-tag">등록일시 {{ activity.created_at|date:'Y-m-d H:i:s' }}</span>
+    </div>
+</section>
+
+<section class="box compact-box mb-4">
+    <h3 class="title is-6 mb-3">기본 정보</h3>
+    <div class="table-container">
+        <table class="table is-fullwidth is-size-7 compact-table activity-detail-info-table">
+            <tbody>
+                <tr>
+                    <th>제목</th>
+                    <td class="activity-detail-title">{{ activity.title }}</td>
+                </tr>
+                <tr>
+                    <th>닉네임</th>
+                    <td>
+                        <a class="member-detail-link" href="{% url 'core:staff-member-detail' activity.member.id %}">
+                            {{ activity.member.display_name }}
+                            <span class="mono-cell">({{ activity.member.lightning_identifier }})</span>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>활동비(sats)</th>
+                    <td class="mono-cell">{{ activity.amount_sats|intcomma }}</td>
+                </tr>
+                <tr>
+                    <th>라이트닝 주소</th>
+                    <td class="mono-cell activity-lightning-address">{{ activity.lightning_address }}</td>
+                </tr>
+                <tr>
+                    <th>근거 링크</th>
+                    <td>
+                        <a class="activity-evidence-link" href="{{ activity.evidence_url }}" target="_blank" rel="noopener noreferrer">
+                            {{ activity.evidence_url }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>상태</th>
+                    <td>
+                        {% if activity.status == 'registered' %}
+                            <span class="tag activity-status-tag is-registered">등록</span>
+                        {% elif activity.status == 'settlement_requested' %}
+                            <span class="tag activity-status-tag is-requested">정산요청</span>
+                        {% elif activity.status == 'settlement_completed' %}
+                            <span class="tag activity-status-tag is-completed">정산완료</span>
+                        {% else %}
+                            <span class="tag activity-status-tag">{{ activity.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>처리자</th>
+                    <td>
+                        {% if settlement_processor_member %}
+                            {{ settlement_processor_member.display_name }}
+                            <span class="mono-cell">({{ settlement_processor_member.lightning_identifier }})</span>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>처리일시</th>
+                    <td>{{ activity.settlement_processed_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+                </tr>
+                <tr>
+                    <th>전송 근거</th>
+                    <td class="activity-transfer-note">
+                        {% if activity.settlement_transfer_status or activity.settlement_transfer_reference or activity.settlement_transfer_note %}
+                            {% if activity.settlement_transfer_status %}상태 {{ activity.settlement_transfer_status }}{% endif %}
+                            {% if activity.settlement_transfer_reference %}<br>참조 {{ activity.settlement_transfer_reference }}{% endif %}
+                            {% if activity.settlement_transfer_note %}<br>{{ activity.settlement_transfer_note }}{% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="box compact-box mb-4">
+    <h3 class="title is-6 mb-3">내용</h3>
+    <div class="activity-detail-content">{{ activity.content_html|safe }}</div>
+</section>
+
+<section class="box compact-box mb-4">
+    <h3 class="title is-6 mb-3">활동 첨부</h3>
+    {% if activity_attachments %}
+        <div class="activity-attachment-list">
+            {% for attachment in activity_attachments %}
+                <a class="activity-attachment-link" href="{% url 'core:staff-activity-attachment-download' attachment.id %}">
+                    {{ attachment.original_filename }}
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="is-size-7 has-text-grey mb-0">첨부파일이 없습니다.</p>
+    {% endif %}
+</section>
+
+<section class="box compact-box mb-4">
+    <h3 class="title is-6 mb-3">정산요청 결과</h3>
+    {% if activity.settlement_result_html %}
+        <div class="activity-detail-content">{{ activity.settlement_result_html|safe }}</div>
+    {% else %}
+        <p class="is-size-7 has-text-grey mb-0">아직 정산요청 결과가 등록되지 않았습니다.</p>
+    {% endif %}
+</section>
+
+<section class="box compact-box mb-4">
+    <h3 class="title is-6 mb-3">정산 근거 첨부</h3>
+    {% if settlement_evidence_attachments %}
+        <div class="activity-attachment-list">
+            {% for attachment in settlement_evidence_attachments %}
+                <a class="activity-attachment-link" href="{% url 'core:staff-activity-attachment-download' attachment.id %}">
+                    {{ attachment.original_filename }}
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="is-size-7 has-text-grey mb-0">정산 근거 첨부가 없습니다.</p>
+    {% endif %}
+</section>
+
+<div class="is-flex is-justify-content-space-between is-align-items-center">
+    {% if detail_back_url %}
+        <a class="button is-small" href="{{ detail_back_url }}">목록으로</a>
+    {% else %}
+        <a class="button is-small" href="{% url 'core:staff-activities' %}">목록으로</a>
+    {% endif %}
+    <div class="buttons are-small mb-0">
+        {% if can_request_activity_settlement %}
+            <a class="button is-small activity-request-action-button" href="{% url 'core:staff-activity-request-settlement' activity.id %}">정산요청</a>
+        {% endif %}
+        {% if nav_is_backoffice_admin and activity.status == 'settlement_requested' %}
+            <a class="button is-small is-success" href="{% url 'core:staff-settlement-process' %}">정산 처리로 이동</a>
+        {% endif %}
+        {% if can_manage_activity %}
+            <a class="button is-small" href="{% url 'core:staff-activity-edit' activity.id %}">수정</a>
+            <form method="post" action="{% url 'core:staff-activity-delete' activity.id %}">
+                {% csrf_token %}
+                <button class="button is-small is-danger" type="submit">삭제</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

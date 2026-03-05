@@ -1,0 +1,6 @@
+{% for item in activities_with_no %}
+    {% include 'core/partials/activity_row.html' with activity=item.row row_no=item.row_no %}
+{% endfor %}
+<tr data-search-empty-row {% if activities_with_no %}hidden{% endif %}>
+    <td colspan="9" class="has-text-grey">등록된 활동이 없습니다.</td>
+</tr>

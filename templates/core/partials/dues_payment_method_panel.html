@@ -1,0 +1,95 @@
+{% load humanize %}
+<div id="dues-payment-method-panel" class="dues-method-panel">
+    {% if payment_action_error_message %}
+        <p class="has-text-danger is-size-7 mb-3">{{ payment_action_error_message }}</p>
+    {% endif %}
+    {% if payment is None %}
+        <p class="is-size-7 has-text-grey">회비 납입 정보를 준비 중입니다.</p>
+    {% elif payment.payment_method == 'onchain' %}
+        <h3 class="title is-6 mb-2">온체인 결제</h3>
+        <p class="is-size-7 has-text-grey mb-3">
+            아래 온체인 주소로 {{ payment.amount_sats|intcomma }} sats 이상 전송한 뒤 TXID를 입력해 주세요.
+            전송이 감지되면 자동 승인됩니다.
+        </p>
+
+        <div class="dues-payment-code-wrap mb-3">
+            {% if payment_qr_image_url %}
+                <img src="{{ payment_qr_image_url }}" alt="온체인 주소 QR 코드" class="dues-payment-qr">
+            {% endif %}
+            <div class="dues-copy-row">
+                <input id="copy-onchain-address-{{ payment.id }}" class="input is-small mono-cell" type="text" readonly value="{{ payment.destination_onchain_address }}">
+                <button class="button is-small is-dark dues-copy-button" type="button" data-copy-target="#copy-onchain-address-{{ payment.id }}" aria-label="주소 복사">
+                    <span class="dues-copy-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <form
+            method="post"
+            hx-post="{% url 'core:my-dues-payment-submit-onchain-txid' %}"
+            hx-target="#dues-payment-method-panel"
+            hx-swap="outerHTML"
+        >
+            {% csrf_token %}
+            <div class="field has-addons mb-2">
+                <div class="control is-expanded">
+                    <input
+                        class="input is-small mono-cell"
+                        type="text"
+                        name="onchain_txid"
+                        placeholder="TXID 입력"
+                        value="{{ payment.onchain_txid }}"
+                        required
+                    >
+                </div>
+                <div class="control">
+                    <button class="button is-link is-small" type="submit">저장</button>
+                </div>
+            </div>
+        </form>
+
+        <p class="is-size-7 has-text-grey mb-0">상태: {{ payment.get_status_display }}{% if payment.check_note %} · {{ payment.check_note }}{% endif %}</p>
+    {% elif payment.payment_method == 'lightning' %}
+        <h3 class="title is-6 mb-2">라이트닝 결제</h3>
+        {% if payment.lightning_invoice %}
+            <p class="is-size-7 has-text-grey mb-3">
+                블링크 인보이스를 생성했습니다. 결제가 감지되면 자동으로 승인됩니다.
+            </p>
+            {% if lightning_invoice_expires_in_seconds is not None %}
+                <p class="is-size-7 has-text-grey mb-3">
+                    인보이스 만료까지 <span class="tag is-warning dues-countdown-tag">{{ lightning_invoice_expires_mmss }}</span> (2분 기준)
+                </p>
+            {% endif %}
+        {% else %}
+            <p class="is-size-7 has-text-grey mb-3">
+                라이트닝 인보이스 생성에 실패했습니다. 블링크 설정을 확인한 뒤 다시 시도해 주세요.
+            </p>
+        {% endif %}
+
+        <div class="dues-payment-code-wrap mb-3">
+            {% if payment_qr_image_url %}
+                <img src="{{ payment_qr_image_url }}" alt="라이트닝 인보이스 QR 코드" class="dues-payment-qr">
+            {% endif %}
+            <div class="dues-copy-row">
+                <input id="copy-lightning-invoice-{{ payment.id }}" class="input is-small mono-cell" type="text" readonly value="{{ payment.lightning_invoice }}">
+                <button class="button is-small is-dark dues-copy-button" type="button" data-copy-target="#copy-lightning-invoice-{{ payment.id }}" aria-label="인보이스 복사">
+                    <span class="dues-copy-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <p class="is-size-7 has-text-grey mb-0">상태: {{ payment.get_status_display }}{% if payment.check_note %} · {{ payment.check_note }}{% endif %}</p>
+    {% else %}
+        <p class="is-size-7 has-text-grey">온체인 또는 라이트닝 결제 수단을 선택해 주세요.</p>
+    {% endif %}
+
+    {% if payment and payment.status != 'paid' and payment.payment_method %}
+        <div
+            class="is-hidden"
+            hx-get="{{ payment_poll_url }}"
+            hx-trigger="every {{ poll_seconds }}s"
+            hx-target="#dues-payment-method-panel"
+            hx-swap="outerHTML"
+        ></div>
+    {% endif %}
+</div>

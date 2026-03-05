@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}탈퇴 완료{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-2">탈퇴가 완료되었습니다.</h2>
+    <p class="is-size-7 has-text-grey mb-2">
+        <strong>{{ former_display_name }}</strong> ({{ former_lightning_identifier }}) 계정의 회원 데이터 삭제가 즉시 처리되었습니다.
+    </p>
+    <p class="is-size-7 has-text-grey mb-3">
+        탈퇴 이력만 보존되며, 다시 가입하려면 라이트닝 로그인 후 신규 가입 절차를 진행해 주세요.
+    </p>
+    <a class="button is-small is-link" href="{% url 'core:lightning-login' %}">라이트닝 로그인으로 이동</a>
+</section>
+{% endblock %}

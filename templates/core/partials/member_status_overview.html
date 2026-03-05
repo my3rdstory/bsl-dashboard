@@ -1,0 +1,51 @@
+{% load humanize %}
+<section class="box compact-box mb-4 member-status-hero member-status-hero-{{ member.status }}">
+    <div class="member-status-tags mb-3">
+        <span class="tag member-status-pill member-status-pill-{{ member.status }}">{{ member.get_status_display }}</span>
+        <span class="tag is-dark">{{ member.display_name }}</span>
+    </div>
+    <div class="member-status-id-block mono-cell lightning-id-text mb-3">라이트닝 ID: {{ member.lightning_identifier }}</div>
+    <div class="member-profile-control-grid mb-3">
+        <form method="post" action="{% url 'core:my-nickname-update' %}" class="member-nickname-form">
+            {% csrf_token %}
+            <label class="label is-small mb-1" for="{{ nickname_form.display_name.id_for_label }}">닉네임 수정</label>
+            <div class="member-nickname-form-row">
+                {{ nickname_form.display_name }}
+                <button class="button is-small is-link" type="submit">저장</button>
+            </div>
+            <p class="help is-size-7 mt-1 mb-0">일반 텍스트/이모지는 가능하며, 위험 특수문자는 제한됩니다.</p>
+        </form>
+        <section class="member-withdraw-box">
+            <h3 class="is-size-7 mb-2">회원탈퇴</h3>
+            <p class="is-size-7 has-text-grey mb-2">탈퇴 시 탈퇴 이력만 남고 회원/활동/정산/회비 데이터가 즉시 삭제됩니다.</p>
+            <a class="button is-small is-danger is-outlined" href="{% url 'core:my-withdraw-request' %}">회원탈퇴 진행</a>
+        </section>
+    </div>
+
+    <h2 class="title is-5 mb-2">내 회원 상태</h2>
+    <div class="member-status-guide is-size-7">
+        {% if member.status == 'pending' %}
+            <p class="mb-2">가입 신청이 정상 접수되었습니다. 현재는 운영진 승인 대기 단계입니다.</p>
+            <p class="mb-2">운영진이 신청 내용과 인증 정보를 검토한 뒤 승인 또는 반려를 처리합니다.</p>
+            <p class="mb-0">승인 완료 시 자동으로 회비 납입 단계로 이동하며, 다음 로그인부터 회비 납입 안내 화면이 표시됩니다.</p>
+        {% elif member.status == 'approved' %}
+            <p class="mb-2">승인은 완료되었고, 지금은 회비확인 대기 단계입니다.</p>
+            <p class="mb-2">아래에서 온체인 또는 라이트닝 결제 수단을 선택해 회비를 납부해 주세요.</p>
+            {% if payment %}
+                <p class="mb-0">이번 납부 기준: 신청월 {{ payment.request_month|date:'Y-m' }}, 회비 {{ payment.amount_sats|intcomma }} sats</p>
+            {% else %}
+                <p class="mb-0">결제 정보 준비 중 오류가 발생하면 운영진에게 문의해 주세요.</p>
+            {% endif %}
+        {% elif member.status == 'rejected' %}
+            <p class="mb-2">가입 신청이 반려된 상태입니다.</p>
+            <p class="mb-2">반려 사유를 확인한 뒤 보완이 필요하면 운영진 안내에 따라 재신청해 주세요.</p>
+            <p class="mb-0">재신청이 접수되면 상태가 다시 승인 대기로 전환되고, 승인 후 회비 납입 단계로 진행됩니다.</p>
+        {% elif member.status == 'active' %}
+            <p class="mb-2">정회원 상태입니다. 회비와 활동 내역을 정상적으로 이용할 수 있습니다.</p>
+            <p class="mb-2">아래 연도별 회비 표에서 결제수단과 납부 식별자(TXID/라이트닝 인보이스)를 확인할 수 있습니다.</p>
+            <p class="mb-0">문의가 필요한 경우 라이트닝 ID와 함께 운영진에게 전달하면 처리 속도가 빨라집니다.</p>
+        {% else %}
+            <p class="mb-0">현재 회원 상태를 확인할 수 없습니다. 문제가 계속되면 운영진에게 문의해 주세요.</p>
+        {% endif %}
+    </div>
+</section>

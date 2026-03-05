@@ -1,0 +1,22 @@
+{% load humanize %}
+<tr
+    data-search-row
+    data-search-key="{{ member.display_name }} {{ member.lightning_identifier }} {{ reviewer_label }} {{ member.review_note }} {{ member.reviewed_at|date:'Y-m-d H:i' }}"
+>
+    <td class="num-cell">{{ row_no|default:'-'|intcomma }}</td>
+    <td>
+        <a class="member-detail-link" href="{% url 'core:staff-member-detail' member.id %}">
+            <div class="nickname-title-row">
+                <span>{{ member.display_name }}</span>
+                {% if member.is_backoffice_admin %}
+                    {% include 'core/components/backoffice_admin_badge_icon.html' %}
+                {% endif %}
+            </div>
+            <div class="nickname-lightning mono-cell">({{ member.lightning_identifier }})</div>
+        </a>
+    </td>
+    <td>{{ member.requested_at|date:'Y-m-d H:i' }}</td>
+    <td>{{ member.reviewed_at|date:'Y-m-d H:i'|default:'-' }}</td>
+    <td>{{ reviewer_label|default:'-' }}</td>
+    <td>{{ member.review_note|default:'-' }}</td>
+</tr>

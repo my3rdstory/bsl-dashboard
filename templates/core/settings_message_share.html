@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}메시지 공유 설정{% endblock %}
+
+{% block content %}
+<section class="box compact-box" data-message-share-form-root>
+    <h2 class="title is-5 mb-1">메시지 공유 설정</h2>
+    <p class="is-size-7 has-text-grey mb-4">
+        활동 내역 공유 대상(어드민 이메일/디스코드 채널)과 홈 대시보드에 노출할 회원 모집 메시지를 관리합니다.
+    </p>
+
+    <form method="post" data-message-share-form>
+        {% csrf_token %}
+
+        <div class="box compact-box mb-4">
+            <h3 class="title is-6 mb-3">메시지 환경 설정</h3>
+            <p class="is-size-7 has-text-grey mb-3">
+                등록 시 활동 등록/정산요청/정산완료/승인대기 회원 발생/승인 처리/회비입금 확인 내역을 설정된 채널로 전송합니다.
+            </p>
+
+            <div class="field">
+                <label class="label is-size-7" for="{{ form.admin_email.id_for_label }}">어드민 이메일</label>
+                {{ form.admin_email }}
+                <p class="help is-size-7">여러 개 등록 시 콤마(,)로 구분하세요. 미입력 시 이메일 전송 안함</p>
+                {% if form.admin_email.errors %}
+                    <p class="help is-danger">{{ form.admin_email.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <div class="columns is-variable is-2 setting-inline-row">
+                <div class="column is-4-desktop is-12-mobile">
+                    <div class="field">
+                        <label class="label is-size-7" for="{{ form.gmail_app_password.id_for_label }}">지메일 앱 비밀번호</label>
+                        {{ form.gmail_app_password }}
+                        <p class="help is-size-7">Google 계정 앱 비밀번호(미입력 시 기존값 유지)</p>
+                        {% if current_setting.gmail_app_password %}
+                            <p class="help is-size-7">현재 저장됨: ********</p>
+                        {% endif %}
+                        {% if form.gmail_app_password.errors %}
+                            <p class="help is-danger">{{ form.gmail_app_password.errors|join:', ' }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="column is-4-desktop is-12-mobile">
+                    <div class="field">
+                        <label class="label is-size-7" for="{{ form.gmail_sender_email.id_for_label }}">발송 이메일 주소</label>
+                        {{ form.gmail_sender_email }}
+                        <p class="help is-size-7">지메일 SMTP 로그인 계정</p>
+                        {% if form.gmail_sender_email.errors %}
+                            <p class="help is-danger">{{ form.gmail_sender_email.errors|join:', ' }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="column is-4-desktop is-12-mobile">
+                    <div class="field">
+                        <label class="label is-size-7" for="{{ form.gmail_sender_name.id_for_label }}">발송자 이름</label>
+                        {{ form.gmail_sender_name }}
+                        <p class="help is-size-7">이메일 발신자 이름</p>
+                        {% if form.gmail_sender_name.errors %}
+                            <p class="help is-danger">{{ form.gmail_sender_name.errors|join:', ' }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label is-size-7" for="{{ form.discord_channel_id.id_for_label }}">디스코드 채널 ID</label>
+                {{ form.discord_channel_id }}
+                <p class="help is-size-7">여러 채널 등록 시 콤마(,)로 구분한 숫자 채널 ID를 입력하세요.</p>
+                <p class="help is-size-7">디스코드 전송에는 <span class="mono-cell">MESSAGE_SHARE_DISCORD_BOT_TOKEN</span> 환경변수가 필요합니다.</p>
+                {% if form.discord_channel_id.errors %}
+                    <p class="help is-danger">{{ form.discord_channel_id.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="box compact-box mb-4">
+            <h3 class="title is-6 mb-3">메시지 선택</h3>
+            <div class="field">
+                <label class="label is-size-7">메시지 보낼 활동 종류</label>
+                <div class="table-container">
+                    <table class="table is-fullwidth is-size-7 compact-table">
+                        <thead>
+                            <tr>
+                                <th>활동 종류</th>
+                                <th>이메일</th>
+                                <th>디스코드</th>
+                                <th class="message-share-example-col">메시지 예시</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>승인대기 회원 발생</td>
+                                <td>{{ form.send_member_pending_email }}</td>
+                                <td>{{ form.send_member_pending_discord }}</td>
+                                <td class="message-share-example-cell">
+                                    <pre class="message-share-example">{{ message_examples_map.member_pending.content|default:'-' }}</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>승인 처리</td>
+                                <td>{{ form.send_member_approved_email }}</td>
+                                <td>{{ form.send_member_approved_discord }}</td>
+                                <td class="message-share-example-cell">
+                                    <pre class="message-share-example">{{ message_examples_map.member_approved.content|default:'-' }}</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>회비입금 확인 및 회원등록</td>
+                                <td>{{ form.send_member_dues_confirmed_email }}</td>
+                                <td>{{ form.send_member_dues_confirmed_discord }}</td>
+                                <td class="message-share-example-cell">
+                                    <pre class="message-share-example">{{ message_examples_map.member_dues_confirmed.content|default:'-' }}</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>활동 등록</td>
+                                <td>{{ form.send_activity_created_email }}</td>
+                                <td>{{ form.send_activity_created_discord }}</td>
+                                <td class="message-share-example-cell">
+                                    <pre class="message-share-example">{{ message_examples_map.activity_created.content|default:'-' }}</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>정산요청</td>
+                                <td>{{ form.send_settlement_requested_email }}</td>
+                                <td>{{ form.send_settlement_requested_discord }}</td>
+                                <td class="message-share-example-cell">
+                                    <pre class="message-share-example">{{ message_examples_map.settlement_requested.content|default:'-' }}</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>정산완료</td>
+                                <td>{{ form.send_settlement_completed_email }}</td>
+                                <td>{{ form.send_settlement_completed_discord }}</td>
+                                <td class="message-share-example-cell">
+                                    <pre class="message-share-example">{{ message_examples_map.settlement_completed.content|default:'-' }}</pre>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="help is-size-7">체크한 채널로만 해당 이벤트 메시지를 보냅니다.</p>
+            </div>
+        </div>
+
+        <div class="box compact-box mb-4">
+            <h3 class="title is-6 mb-3">공유 메시지</h3>
+            <div class="field">
+                <label class="label is-size-7">공유 메시지 등록</label>
+                <div class="activity-editor" data-message-share-editor></div>
+                {{ form.recruiting_message_html }}
+                <p class="help is-size-7">매월 회원 모집에 사용할 문구를 에디터로 등록하면 홈(대시보드)에 복붙용으로 노출됩니다.</p>
+                {% if form.recruiting_message_html.errors %}
+                    <p class="help is-danger">{{ form.recruiting_message_html.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+            <div class="buttons are-small mb-0">
+                <button class="button is-success is-small" type="submit">저장</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="box compact-box mb-0">
+        <h3 class="title is-6 mb-2">현재 설정</h3>
+        <ul class="message-share-current-list is-size-7 has-text-grey mb-1">
+            <li>어드민 이메일: {{ current_setting.admin_email|default:'-' }}</li>
+            <li>발송 이메일 주소: {{ current_setting.gmail_sender_email|default:'-' }}</li>
+            <li>발송자 이름: {{ current_setting.gmail_sender_name|default:'-' }}</li>
+            <li>지메일 앱 비밀번호: {% if current_setting.gmail_app_password %}저장됨{% else %}미설정{% endif %}</li>
+            <li>디스코드 채널 ID: {{ current_setting.discord_channel_id|default:'-' }}</li>
+            <li>
+                메시지 발송 채널
+                <ul class="message-share-current-sublist">
+                    <li>승인대기 회원 발생: 이메일 {% if current_setting.send_member_pending_email %}ON{% else %}OFF{% endif %} / 디스코드 {% if current_setting.send_member_pending_discord %}ON{% else %}OFF{% endif %}</li>
+                    <li>승인 처리: 이메일 {% if current_setting.send_member_approved_email %}ON{% else %}OFF{% endif %} / 디스코드 {% if current_setting.send_member_approved_discord %}ON{% else %}OFF{% endif %}</li>
+                    <li>회비입금 확인 및 회원등록: 이메일 {% if current_setting.send_member_dues_confirmed_email %}ON{% else %}OFF{% endif %} / 디스코드 {% if current_setting.send_member_dues_confirmed_discord %}ON{% else %}OFF{% endif %}</li>
+                    <li>활동 등록: 이메일 {% if current_setting.send_activity_created_email %}ON{% else %}OFF{% endif %} / 디스코드 {% if current_setting.send_activity_created_discord %}ON{% else %}OFF{% endif %}</li>
+                    <li>정산요청: 이메일 {% if current_setting.send_settlement_requested_email %}ON{% else %}OFF{% endif %} / 디스코드 {% if current_setting.send_settlement_requested_discord %}ON{% else %}OFF{% endif %}</li>
+                    <li>정산완료: 이메일 {% if current_setting.send_settlement_completed_email %}ON{% else %}OFF{% endif %} / 디스코드 {% if current_setting.send_settlement_completed_discord %}ON{% else %}OFF{% endif %}</li>
+                </ul>
+            </li>
+            <li>마지막 수정: {{ current_setting.updated_at|date:'Y-m-d H:i:s' }}</li>
+        </ul>
+    </div>
+</section>
+
+<link rel="stylesheet" href="{% static 'vendor/quill/quill.snow.css' %}">
+<script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+<script src="{% static 'js/settings-message-share.js' %}" defer></script>
+{% endblock %}

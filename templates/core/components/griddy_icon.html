@@ -1,0 +1,11 @@
+{% load static %}
+{% with icon_style=icon_style|default:'regular' %}
+<svg
+    class="griddy-icon{% if class_name %} {{ class_name }}{% endif %}"
+    aria-hidden="{% if title %}false{% elif aria_label %}false{% else %}true{% endif %}"
+    {% if title or aria_label %}role="img"{% endif %}
+    {% if title or aria_label %}aria-label="{{ title|default:aria_label }}"{% endif %}
+>
+    <use href="{% static 'vendor/griddy-icons/griddy-icons-sprite.svg' %}#griddy-{{ icon_name }}-{{ icon_style }}"></use>
+</svg>
+{% endwith %}

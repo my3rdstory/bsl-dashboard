@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}기존 회원 1차 등록{% endblock %}
+
+{% block content %}
+<section class="box compact-box form-box">
+    <h2 class="title is-5 mb-2">기존 회원 1차 등록 신청</h2>
+    <p class="is-size-7 has-text-grey mb-4">라이트닝 인증 ID를 기준으로 신청하고, 어드민이 회비 내역 확인 후 승인합니다.</p>
+    <form method="post" class="is-flex is-flex-direction-column gap-3">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div>
+                <label class="label is-small" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="control">{{ field }}</div>
+                {% if field.errors %}<p class="help is-danger">{{ field.errors|striptags }}</p>{% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="button is-small is-link">등록 신청</button>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,87 @@
+.table.compact-table th,
+.table.compact-table td {
+    font-size: 0.88rem;
+    vertical-align: middle;
+    padding: 0.45rem 0.5rem;
+}
+
+.searchable-table-toolbar {
+    width: 100%;
+}
+
+.searchable-table-toolbar .searchable-table-input.input {
+    border-color: #405566 !important;
+    width: min(25%, 12rem) !important;
+    min-width: 0;
+    max-width: none;
+}
+
+.mono-cell {
+    font-family: "Space Grotesk", "IBM Plex Sans KR", monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.01em;
+}
+
+.num-cell {
+    text-align: right !important;
+    font-variant-numeric: tabular-nums;
+}
+
+.nickname-cell {
+    white-space: normal !important;
+}
+
+.nickname-title-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+    max-width: 100%;
+}
+
+.admin-wrench-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9rem;
+    height: 0.9rem;
+    color: #8eaec2;
+    flex: 0 0 auto;
+}
+
+.admin-wrench-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.nickname-lightning {
+    margin-top: 0.08rem;
+    font-size: 0.72rem;
+    color: #b7c6d1;
+    line-height: 1.35;
+    white-space: normal !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+}
+
+.lightning-id-text {
+    display: inline-block !important;
+    min-width: 0;
+    white-space: normal !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    max-width: 100% !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.member-detail-lightning-id {
+    background: #192530;
+    border: 1px solid #32495a;
+    color: #c7d8e5;
+    border-radius: 4px;
+    padding: 0.22rem 0.55rem;
+    font-size: 0.76rem;
+    line-height: 1.4;
+}

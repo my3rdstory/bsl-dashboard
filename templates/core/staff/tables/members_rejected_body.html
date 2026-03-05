@@ -1,0 +1,6 @@
+{% for row in members_with_no %}
+    {% include 'core/partials/member_rejected_row.html' with member=row.member row_no=row.row_no reviewer_label=row.reviewer_label %}
+{% endfor %}
+<tr data-search-empty-row {% if members_with_no %}hidden{% endif %}>
+    <td colspan="6" class="has-text-grey">현재 반려 회원이 없습니다.</td>
+</tr>

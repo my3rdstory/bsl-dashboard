@@ -1,0 +1,150 @@
+.member-status-hero {
+    border: 1px solid #2f4455;
+    background: linear-gradient(135deg, #111a23 0%, #101820 100%);
+}
+
+.member-status-hero.member-status-hero-pending {
+    border-color: #675235;
+    background: linear-gradient(135deg, #231b10 0%, #1a1510 100%);
+}
+
+.member-status-hero.member-status-hero-approved {
+    border-color: #33576f;
+    background: linear-gradient(135deg, #101e29 0%, #0f1722 100%);
+}
+
+.member-status-hero.member-status-hero-rejected {
+    border-color: #6a3d3d;
+    background: linear-gradient(135deg, #241314 0%, #1a1112 100%);
+}
+
+.member-status-hero.member-status-hero-active {
+    border-color: #2f5d49;
+    background: linear-gradient(135deg, #0f1e18 0%, #101a16 100%);
+}
+
+.member-status-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.tags .tag.lightning-id-text,
+.member-status-tags .tag.lightning-id-text {
+    flex: 1 1 100%;
+}
+
+.member-status-id-block {
+    background: #192530;
+    border: 1px solid #32495a;
+    color: #c7d8e5;
+    border-radius: 4px;
+    padding: 0.22rem 0.55rem;
+    font-size: 0.76rem;
+    line-height: 1.4;
+}
+
+.content-pane .tag.member-status-pill {
+    padding: 0.26rem 0.68rem;
+    font-size: 0.83rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    border-width: 1px;
+}
+
+.content-pane .tag.member-status-pill-pending {
+    background: #4e3a20 !important;
+    border-color: #8f6a36 !important;
+    color: #ffe5af !important;
+}
+
+.content-pane .tag.member-status-pill-approved {
+    background: #223a50 !important;
+    border-color: #3f6c8e !important;
+    color: #c8e8ff !important;
+}
+
+.content-pane .tag.member-status-pill-rejected {
+    background: #4a2426 !important;
+    border-color: #8d4a4d !important;
+    color: #ffcbcf !important;
+}
+
+.content-pane .tag.member-status-pill-active {
+    background: #214734 !important;
+    border-color: #3a7b5a !important;
+    color: #caf5df !important;
+}
+
+.content-pane .tag.member-status-id {
+    background: #192530 !important;
+    border-color: #32495a !important;
+    color: #c7d8e5 !important;
+    white-space: normal !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.member-status-guide {
+    color: #d5e3ee;
+    line-height: 1.63;
+}
+
+.member-nickname-form {
+    width: min(100%, 34rem);
+    padding: 0.65rem 0.72rem;
+    border: 1px solid #315069;
+    background: linear-gradient(135deg, #112332 0%, #10212f 100%);
+}
+
+.member-profile-control-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+    align-items: stretch;
+}
+
+.member-profile-control-grid .member-nickname-form {
+    width: 100%;
+}
+
+.member-withdraw-box {
+    padding: 0.65rem 0.72rem;
+    border: 1px solid #6c3a43;
+    background: linear-gradient(135deg, #2b1419 0%, #231218 100%);
+    border-radius: 4px;
+}
+
+.member-withdraw-box .button.is-outlined.is-danger {
+    border-color: #b16372;
+    color: #ffd7de;
+}
+
+.member-withdraw-box .button.is-outlined.is-danger:hover {
+    background: #4b2730;
+    border-color: #c47281;
+    color: #ffe2e8;
+}
+
+.member-nickname-form-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.member-nickname-form-row .input {
+    min-width: 0;
+}
+
+@media (max-width: 520px) {
+    .member-profile-control-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .member-nickname-form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

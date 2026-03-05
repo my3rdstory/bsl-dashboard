@@ -1,0 +1,41 @@
+# version: '3.8'
+# 주의: 이 파일은 개발용입니다. 프로덕션에서는 사용하지 마세요!
+services:
+  postgres:
+    image: postgres:15
+    container_name: bsl-dashboard-postgres
+    environment:
+      POSTGRES_DB: bsl-dashboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "passwordQhrwkqgkrp23$^%"
+    ports:
+      - "127.0.0.1:5211:5432"
+    volumes:
+      - bsl-dashboard-postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    # 보안 설정
+    security_opt:
+      - no-new-privileges:true
+    user: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bsl-dashboard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  adminer:
+    image: adminer:4
+    container_name: bsl-dashboard-adminer
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    ports:
+      - "127.0.0.1:8282:8080"
+    restart: unless-stopped
+    # 보안: 로컬호스트 바인딩(127.0.0.1)으로 외부 노출 방지
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  bsl-dashboard-postgres_data:

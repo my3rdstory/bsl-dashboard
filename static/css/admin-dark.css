@@ -1,0 +1,103 @@
+/*
+ * Keep Django admin theme toggle working by following Django color variables.
+ * Do not force color-scheme/light mode here.
+ */
+html,
+body,
+#container,
+#content,
+.module,
+#changelist-form {
+    background: var(--body-bg) !important;
+    color: var(--body-fg) !important;
+}
+
+#header {
+    background: var(--header-bg) !important;
+    color: var(--header-color) !important;
+}
+
+#nav-sidebar,
+.breadcrumbs,
+.submit-row,
+.inline-group,
+.dashboard .module table th,
+.dashboard .module table td {
+    background: var(--body-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--body-fg) !important;
+}
+
+#branding h1,
+#site-name,
+#site-name a,
+.module caption,
+.breadcrumbs a,
+#nav-sidebar .current-model,
+#nav-sidebar a,
+th,
+td,
+label,
+.help,
+.helptext,
+.object-tools a {
+    color: var(--body-fg) !important;
+}
+
+#nav-sidebar .model-core a,
+#nav-sidebar a {
+    color: var(--body-quiet-color) !important;
+}
+
+#nav-sidebar a:hover {
+    color: var(--body-fg) !important;
+    background: var(--darkened-bg) !important;
+}
+
+#nav-sidebar .current-model a {
+    color: var(--body-fg) !important;
+    background: var(--selected-bg) !important;
+}
+
+input,
+textarea,
+select,
+.vTextField,
+.vLargeTextField,
+.vURLField,
+.vIntegerField,
+.vDateField,
+.vTimeField,
+.vForeignKeyRawIdAdminField {
+    background: var(--body-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--body-fg) !important;
+}
+
+.bo-admin-toggle-link,
+.bo-admin-state {
+    display: inline-block;
+    min-width: 2.8rem;
+    padding: 0.12rem 0.55rem;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+}
+
+.bo-admin-toggle-link {
+    text-decoration: none !important;
+}
+
+.bo-admin-toggle-link.is-on,
+.bo-admin-state.is-on {
+    background: var(--message-success-bg);
+    color: var(--body-fg) !important;
+}
+
+.bo-admin-toggle-link.is-off,
+.bo-admin-state.is-off {
+    background: var(--darkened-bg);
+    color: var(--body-quiet-color) !important;
+}

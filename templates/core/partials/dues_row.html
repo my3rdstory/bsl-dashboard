@@ -1,0 +1,47 @@
+{% load humanize %}
+<tr id="dues-row-{{ dues.id }}">
+    {% if staff_mode %}
+        <td>{{ dues.member.display_name }}</td>
+    {% endif %}
+    <td>{{ dues.month|date:'Y-m' }}</td>
+    <td class="num-cell">{{ dues.amount|intcomma }}</td>
+    <td>{{ dues.payment_reference|default:'-' }}</td>
+    <td>
+        {% if dues.status == 'approved' %}
+            <span class="tag is-success is-light">승인</span>
+        {% elif dues.status == 'submitted' %}
+            <span class="tag is-warning is-light">납부 제출</span>
+        {% elif dues.status == 'rejected' %}
+            <span class="tag is-danger is-light">반려</span>
+        {% elif dues.status == 'waived' %}
+            <span class="tag is-info is-light">면제</span>
+        {% else %}
+            <span class="tag is-light">대기</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if staff_mode %}
+            <div class="buttons are-small mb-0">
+                <form hx-post="{% url 'core:staff-due-approve' dues.id %}" hx-target="#dues-row-{{ dues.id }}" hx-swap="outerHTML">
+                    <button class="button is-success is-small" type="submit">승인</button>
+                </form>
+                <form hx-post="{% url 'core:staff-due-reject' dues.id %}" hx-target="#dues-row-{{ dues.id }}" hx-swap="outerHTML" hx-confirm="해당 회비를 반려할까요?">
+                    <button class="button is-danger is-small" type="submit">반려</button>
+                </form>
+                <form hx-post="{% url 'core:staff-due-waive' dues.id %}" hx-target="#dues-row-{{ dues.id }}" hx-swap="outerHTML">
+                    <button class="button is-small" type="submit">면제</button>
+                </form>
+            </div>
+        {% else %}
+            {% if dues.status == 'pending' or dues.status == 'rejected' %}
+                <form method="post" hx-post="{% url 'core:submit-due' dues.id %}" hx-target="#dues-row-{{ dues.id }}" hx-swap="outerHTML" class="is-flex">
+                    {% csrf_token %}
+                    <input class="input is-small" name="payment_reference" type="text" placeholder="납부 식별자">
+                    <button class="button is-small ml-2" type="submit">제출</button>
+                </form>
+            {% else %}
+                <span class="has-text-grey">-</span>
+            {% endif %}
+        {% endif %}
+    </td>
+</tr>

@@ -1,0 +1,6 @@
+{% for item in withdrawn_rows %}
+    {% include 'core/partials/member_withdrawn_row.html' with row=item.row row_no=item.row_no actor_label=item.actor_label %}
+{% endfor %}
+<tr data-search-empty-row {% if withdrawn_rows %}hidden{% endif %}>
+    <td colspan="6" class="has-text-grey">현재 탈퇴 회원 이력이 없습니다.</td>
+</tr>

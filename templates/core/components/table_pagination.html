@@ -1,0 +1,25 @@
+{% if page_obj and page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination is-small is-centered searchable-pagination mt-3" role="navigation" aria-label="pagination">
+        {% if page_obj.has_previous %}
+            <a class="pagination-previous" href="?{{ page_param|default:'page' }}={{ page_obj.previous_page_number }}">이전</a>
+        {% else %}
+            <span class="pagination-previous" disabled>이전</span>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a class="pagination-next" href="?{{ page_param|default:'page' }}={{ page_obj.next_page_number }}">다음</a>
+        {% else %}
+            <span class="pagination-next" disabled>다음</span>
+        {% endif %}
+
+        <ul class="pagination-list">
+            {% for page_number in page_obj.paginator.page_range %}
+                {% if page_number == page_obj.number %}
+                    <li><span class="pagination-link is-current">{{ page_number }}</span></li>
+                {% elif page_number >= page_obj.number|add:"-2" and page_number <= page_obj.number|add:"2" %}
+                    <li><a class="pagination-link" href="?{{ page_param|default:'page' }}={{ page_number }}">{{ page_number }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endif %}

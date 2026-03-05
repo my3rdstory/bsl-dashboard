@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}운영 대시보드{% endblock %}
+
+{% block content %}
+<section class="columns is-variable is-2 mb-4">
+    <div class="column is-3-desktop is-6-tablet">
+        <article class="card dashboard-card compact-card">
+            <div class="card-content">
+                <p class="heading">승인 대기 회원</p>
+                <p class="title is-5">{{ metrics.pending_members|intcomma }}</p>
+            </div>
+        </article>
+    </div>
+    <div class="column is-3-desktop is-6-tablet">
+        <article class="card dashboard-card compact-card">
+            <div class="card-content">
+                <p class="heading">{{ month|date:'Y-m' }} 회비</p>
+                <p class="title is-5">{{ metrics.month_total|intcomma }}</p>
+            </div>
+        </article>
+    </div>
+    <div class="column is-3-desktop is-6-tablet">
+        <article class="card dashboard-card compact-card">
+            <div class="card-content">
+                <p class="heading">처리 필요</p>
+                <p class="title is-5">{{ metrics.month_pending|intcomma }}</p>
+            </div>
+        </article>
+    </div>
+    <div class="column is-3-desktop is-6-tablet">
+        <article class="card dashboard-card compact-card">
+            <div class="card-content">
+                <p class="heading">승인 완료</p>
+                <p class="title is-5">{{ metrics.month_approved|intcomma }}</p>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="box compact-box">
+    <h3 class="title is-6 mb-3">운영 바로가기</h3>
+    <div class="buttons are-small">
+        <a class="button" href="{% url 'core:staff-members' %}">회원 목록</a>
+        <a class="button" href="{% url 'core:staff-members-pending' %}">승인대기 회원</a>
+        <a class="button" href="{% url 'core:staff-members-dues-request' %}">회비요청 회원</a>
+        <a class="button" href="{% url 'core:staff-dues-month' %}?month={{ month|date:'Y-m' }}">월 회비 승인</a>
+        <a class="button" href="{% url 'core:staff-settlements' %}">정산 현황</a>
+        <a class="button" href="{% url 'core:staff-activities' %}">활동 관리</a>
+    </div>
+</section>
+{% endblock %}

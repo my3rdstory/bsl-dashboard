@@ -1,0 +1,39 @@
+{% load humanize %}
+<tr
+    id="settlement-row-{{ member.id }}"
+    data-search-row
+    data-search-key="{{ member.display_name }} {{ member.lightning_identifier }} {{ member.settlement.dues_paid_at|date:'Y-m-d H:i:s' }}"
+>
+    <td class="num-cell">{{ row_no|default:'-'|intcomma }}</td>
+    <td class="nickname-cell">
+        <a class="member-detail-link" href="{% url 'core:staff-member-detail' member.id %}">
+            <div class="nickname-title-row">
+                <span>{{ member.display_name }}</span>
+                {% if member.is_backoffice_admin %}
+                    {% include 'core/components/backoffice_admin_badge_icon.html' %}
+                {% endif %}
+            </div>
+            <div class="nickname-lightning mono-cell">({{ member.lightning_identifier }})</div>
+        </a>
+    </td>
+    <td>{{ member.settlement.dues_paid_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+    <td>
+        <div class="buttons are-small mb-0">
+            <form
+                hx-post="{% url 'core:staff-settlement-mark-paid' member.id %}"
+                hx-target="#settlement-row-{{ member.id }}"
+                hx-swap="outerHTML"
+            >
+                <button class="button is-success is-small" type="submit">지금 반영</button>
+            </form>
+            <form
+                hx-post="{% url 'core:staff-settlement-reset' member.id %}"
+                hx-target="#settlement-row-{{ member.id }}"
+                hx-swap="outerHTML"
+                hx-confirm="회비납부일시를 비울까요?"
+            >
+                <button class="button is-danger is-small" type="submit">초기화</button>
+            </form>
+        </div>
+    </td>
+</tr>

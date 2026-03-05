@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}월 회비 승인{% endblock %}
+
+{% block content %}
+<section class="box compact-box mb-3">
+    <div class="is-flex is-justify-content-space-between is-align-items-center is-flex-wrap-wrap">
+        <h2 class="title is-5 mb-0">{{ month|date:'Y-m' }} 회비 승인</h2>
+        <form method="get" class="is-flex is-align-items-center">
+            <input class="input is-small" type="month" name="month" value="{{ month|date:'Y-m' }}">
+            <button class="button is-small ml-2" type="submit">조회</button>
+        </form>
+    </div>
+    <div class="tags mt-3 mb-0">
+        <span class="tag is-light">대기 {{ status_counts.pending|intcomma }}</span>
+        <span class="tag is-warning is-light">제출 {{ status_counts.submitted|intcomma }}</span>
+        <span class="tag is-success is-light">승인 {{ status_counts.approved|intcomma }}</span>
+        <span class="tag is-danger is-light">반려 {{ status_counts.rejected|intcomma }}</span>
+        <span class="tag is-info is-light">면제 {{ status_counts.waived|intcomma }}</span>
+    </div>
+</section>
+
+<section class="box compact-box">
+    <div class="table-container">
+        <table class="table is-fullwidth is-striped is-hoverable is-size-7 compact-table">
+            <thead>
+                <tr>
+                    <th>회원</th>
+                    <th>월</th>
+                    <th class="num-cell">금액</th>
+                    <th>납부 식별자</th>
+                    <th>상태</th>
+                    <th>처리</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dues in dues_list %}
+                    {% include 'core/partials/dues_row.html' with dues=dues staff_mode=True %}
+                {% empty %}
+                <tr><td colspan="6" class="has-text-grey">조회된 회비 데이터가 없습니다.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

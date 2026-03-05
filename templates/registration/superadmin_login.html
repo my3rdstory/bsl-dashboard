@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수퍼어드민 로그인 | BSL 백오피스</title>
+    <link rel="icon" type="image/png" href="{% static 'img/bsl-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bulma/bulma.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/superadmin-login.css' %}">
+</head>
+<body class="auth-page">
+    <section class="auth-card superadmin-auth-card">
+        <div class="auth-brand">
+            <img src="{% static 'img/bsl-logo.png' %}" alt="BSL 로고">
+            <p>Bitcoin Social Layer</p>
+        </div>
+        <p class="auth-guide">수퍼어드민 계정 전용 로그인입니다.</p>
+        <form method="post" class="superadmin-auth-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next_url|default:'/back-office/admin/' }}">
+            {% if form.non_field_errors %}
+                <div class="notification is-danger mb-3">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="field">
+                <label class="label is-small" for="{{ form.username.id_for_label }}">아이디</label>
+                <div class="control">
+                    {{ form.username }}
+                </div>
+                {% for error in form.username.errors %}
+                    <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="field">
+                <label class="label is-small" for="{{ form.password.id_for_label }}">비밀번호</label>
+                <div class="control">
+                    {{ form.password }}
+                </div>
+                {% for error in form.password.errors %}
+                    <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <button class="button is-link is-small is-fullwidth mt-3" type="submit">
+                수퍼어드민 로그인
+            </button>
+        </form>
+        <div class="superadmin-auth-links">
+            <a href="{% url 'core:lightning-login' %}?next={{ next_url|urlencode }}">라이트닝 로그인으로 이동</a>
+        </div>
+    </section>
+</body>
+</html>

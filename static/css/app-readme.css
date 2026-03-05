@@ -1,0 +1,160 @@
+.settings-readme-box {
+    border-color: #2e3f4e !important;
+    background: linear-gradient(145deg, #0e141b, #0c1218);
+}
+
+.settings-readme-box .title {
+    color: #f2f7fc;
+}
+
+.settings-readme-box code {
+    color: #d9e6f4;
+    background: #0d1520;
+    border: 1px solid #2b3e52;
+}
+
+.readme-view-wrap {
+    margin-top: 0.8rem;
+    border: 1px solid #27394a;
+    background: #090d13;
+}
+
+.settings-readme-box .message-body {
+    border-color: #4f5f70;
+    background: #111926;
+    color: #ffdd9e;
+}
+
+.settings-readme-box .message.is-warning {
+    background: #2a230f;
+    border-color: #6f5a23;
+}
+
+.readme-content {
+    margin: 0;
+    padding: 0.75rem;
+    color: #dce7f2;
+    background: transparent;
+    font-family: "IBM Plex Sans KR", sans-serif;
+    font-size: 0.87rem;
+    line-height: 1.65;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.readme-content h1,
+.readme-content h2,
+.readme-content h3,
+.readme-content h4,
+.readme-content h5,
+.readme-content h6 {
+    color: #f2f8ff;
+    margin: 1rem 0 0.6rem;
+    line-height: 1.35;
+}
+
+.readme-content h1 {
+    font-size: 1.3rem;
+    border-bottom: 1px solid #2a3a4b;
+    padding-bottom: 0.35rem;
+}
+
+.readme-content h2 {
+    font-size: 1.1rem;
+}
+
+.readme-content h3 {
+    font-size: 1rem;
+}
+
+.readme-content p,
+.readme-content ul,
+.readme-content ol,
+.readme-content pre {
+    margin: 0 0 0.8rem;
+}
+
+.readme-content ul,
+.readme-content ol {
+    padding-left: 1.35rem;
+    list-style: revert;
+}
+
+.readme-content li {
+    margin-bottom: 0.28rem;
+}
+
+.readme-content ul {
+    list-style-type: disc;
+}
+
+.readme-content ol {
+    list-style-type: decimal;
+}
+
+.readme-content a {
+    color: #7eb6ff;
+    text-decoration: underline;
+}
+
+.readme-content a:hover {
+    color: #b5d8ff;
+}
+
+.readme-content pre {
+    border: 1px solid #27394a;
+    background: #09111a;
+    padding: 0.7rem;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+
+.readme-content hr {
+    border: 0;
+    border-top: 1px solid #2f4151;
+    margin: 1.1rem 0;
+}
+
+.readme-content .readme-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    border: 1px solid #2f4356;
+    margin: 0 0 0.9rem;
+}
+
+.readme-content .readme-table th,
+.readme-content .readme-table td {
+    padding: 0.45rem 0.55rem;
+    border: 1px solid #2f4356;
+    text-align: left;
+    vertical-align: top;
+    color: #d8e5ef;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.readme-content .readme-table th {
+    background: #121b24;
+    color: #f2f7fc;
+}
+
+.readme-content .readme-table tr:nth-child(even) {
+    background: #0e161d;
+}
+
+.readme-content .md-task-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.readme-content .md-task-item input[type="checkbox"] {
+    width: 0.95rem;
+    height: 0.95rem;
+    accent-color: #6fb5ff;
+    background: #0b1118;
+    border: 1px solid #5f7286;
+    cursor: default;
+}

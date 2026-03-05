@@ -1,0 +1,13 @@
+{% if messages %}
+    <div class="app-toast-stack" data-app-toast-stack>
+        {% for message in messages %}
+            <div
+                class="app-toast{% if 'success' in message.tags %} is-success{% elif 'warning' in message.tags %} is-warning{% elif 'error' in message.tags or 'danger' in message.tags %} is-danger{% else %} is-info{% endif %}"
+                data-app-toast
+                data-toast-duration="3000"
+            >
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

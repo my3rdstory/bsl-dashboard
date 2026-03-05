@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ member_list_title|default:"회원 목록" }}{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">{{ member_list_title|default:"회원 목록" }}</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        {{ member_list_description|default:"라이트닝 인증 기반 가입 회원의 운영용 식별정보와 주요 처리 이력을 확인합니다." }}
+        현재 {{ member_total_count|default:0|intcomma }}명입니다.
+    </p>
+
+    {% include 'core/components/searchable_table.html' with table_head_template='core/staff/tables/member_list_head.html' table_body_template='core/staff/tables/member_list_body.html' search_placeholder='닉네임 또는 상태 검색' %}
+</section>
+
+{% include 'core/staff/components/reject_member_modal.html' with next_path=request.path %}
+{% include 'core/staff/components/withdraw_member_modal.html' with next_path=request.path %}
+{% include 'core/staff/components/confirm_dues_modal.html' with next_path=request.path %}
+{% endblock %}

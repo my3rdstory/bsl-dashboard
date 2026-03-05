@@ -1,0 +1,122 @@
+{% if user.is_authenticated %}
+    <nav class="menu compact-menu">
+        <p class="menu-label">공통/회원</p>
+        <ul class="menu-list">
+            {% if nav_can_access_member_menus %}
+                <li>
+                    <a class="sidebar-link{% if '/dashboard/' in request.path %} is-active{% endif %}" href="{% url 'core:home' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='Home' class_name='sidebar-menu-icon' %}
+                        <span>홈</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link{% if request.path == '/members/' %} is-active{% endif %}" href="{% url 'core:staff-members' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='Users' class_name='sidebar-menu-icon' %}
+                        <span>회원 목록</span>
+                    </a>
+                </li>
+            {% endif %}
+            <li>
+                <a class="sidebar-link{% if '/me/' in request.path %} is-active{% endif %}" href="{% url 'core:my-dashboard' %}">
+                    {% include 'core/components/griddy_icon.html' with icon_name='UserCircle' class_name='sidebar-menu-icon' %}
+                    <span>마이페이지</span>
+                </a>
+            </li>
+        </ul>
+
+        {% if nav_is_backoffice_admin %}
+            <p class="menu-label">관리</p>
+            <ul class="menu-list">
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':17' == '/members/pending/' %} is-active{% endif %}" href="{% url 'core:staff-members-pending' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='UserAlert' class_name='sidebar-menu-icon' %}
+                        <span>승인대기 회원</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':22' == '/members/dues-request/' %} is-active{% endif %}" href="{% url 'core:staff-members-dues-request' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='Receipt' class_name='sidebar-menu-icon' %}
+                        <span>회비요청 회원</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':18' == '/members/rejected/' %} is-active{% endif %}" href="{% url 'core:staff-members-rejected' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='UserCancel' class_name='sidebar-menu-icon' %}
+                        <span>반려 회원</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':19' == '/members/withdrawn/' %} is-active{% endif %}" href="{% url 'core:staff-members-withdrawn' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='UserOff' class_name='sidebar-menu-icon' %}
+                        <span>탈퇴 회원</span>
+                    </a>
+                </li>
+            </ul>
+        {% endif %}
+
+        {% if nav_can_access_member_menus %}
+            <p class="menu-label">활동/정산</p>
+            <ul class="menu-list">
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':11' == '/activities/' %} is-active{% endif %}" href="{% url 'core:staff-activities' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='Activity' class_name='sidebar-menu-icon' %}
+                        <span>활동 현황</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link{% if request.path == '/settlements/' %} is-active{% endif %}" href="{% url 'core:staff-settlements' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='Wallet' class_name='sidebar-menu-icon' %}
+                        <span>정산 현황</span>
+                    </a>
+                </li>
+                {% if nav_is_backoffice_admin %}
+                    <li>
+                        <a class="sidebar-link{% if request.path|slice:':21' == '/settlements/process/' %} is-active{% endif %}" href="{% url 'core:staff-settlement-process' %}">
+                            {% include 'core/components/griddy_icon.html' with icon_name='ReceiptAlt' class_name='sidebar-menu-icon' %}
+                            <span>정산 처리</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <p class="menu-label">로그</p>
+            <ul class="menu-list">
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':15' == '/logs/timeline/' %} is-active{% endif %}" href="{% url 'core:logs-timeline' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='ListBulleted' class_name='sidebar-menu-icon' %}
+                        <span>처리 타임라인</span>
+                    </a>
+                </li>
+            </ul>
+        {% endif %}
+
+        {% if nav_is_backoffice_admin %}
+            <p class="menu-label">설정</p>
+            <ul class="menu-list">
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':18' == '/settings/address/' %} is-active{% endif %}" href="{% url 'core:settings-address' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='AddressBook' class_name='sidebar-menu-icon' %}
+                        <span>주소 등록</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':16' == '/settings/basic/' %} is-active{% endif %}" href="{% url 'core:settings-basic' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='Settings' class_name='sidebar-menu-icon' %}
+                        <span>기본 설정</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link{% if request.path|slice:':24' == '/settings/message-share/' %} is-active{% endif %}" href="{% url 'core:settings-message-share' %}">
+                        {% include 'core/components/griddy_icon.html' with icon_name='ShareIos' class_name='sidebar-menu-icon' %}
+                        <span>메시지 공유</span>
+                    </a>
+                </li>
+            </ul>
+        {% endif %}
+
+        <p class="menu-label sidebar-user-label">계정</p>
+        <div class="sidebar-user-actions">
+            {% include 'core/components/nav_user_actions.html' %}
+        </div>
+    </nav>
+{% endif %}

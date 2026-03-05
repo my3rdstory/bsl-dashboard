@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block title %}내 회비 현황{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/member-status.css' %}">{% endblock %}
+
+{% block content %}
+{% include 'core/partials/member_status_overview.html' %}
+
+{% if member.status == 'active' %}
+    <section class="box compact-box">
+        <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+            <h3 class="title is-6 mb-0">연도별 회비</h3>
+        </div>
+        <p class="is-size-7 has-text-grey mb-3">
+            회원 전환 연도({{ active_from_year }})부터의 회비 이력을 연도 단위로 집계해 표시합니다.
+        </p>
+        <div class="table-container">
+            <table class="table is-fullwidth is-striped is-hoverable is-size-7 compact-table">
+                <thead>
+                    <tr>
+                        <th class="num-cell">연도</th>
+                        <th class="num-cell">회비 합계</th>
+                        <th class="num-cell">납부 건수</th>
+                        <th>결제수단</th>
+                        <th>납부 식별자</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in yearly_dues_rows %}
+                    <tr>
+                        <td class="num-cell">{{ row.year }}</td>
+                        <td class="mono-cell num-cell">{{ row.total_amount_sats|intcomma }} sats</td>
+                        <td class="num-cell">{{ row.payment_count|intcomma }}</td>
+                        <td>{{ row.method_labels|join:", " }}</td>
+                        <td class="payment-proof-cell">
+                            {% for proof in row.payment_proofs %}
+                                <div class="mono-cell payment-proof-line">{{ proof.method_label }}: {{ proof.proof_value }}</div>
+                            {% empty %}
+                                <span class="has-text-grey">-</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="has-text-grey">회원 전환 이후 연도별 회비 데이터가 없습니다.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="box compact-box">
+        <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+            <h3 class="title is-6 mb-0">내 활동 현황</h3>
+        </div>
+        <p class="is-size-7 has-text-grey mb-3">
+            내가 등록한 활동 목록입니다.
+            현재 {{ my_activities_total_count|default:0|intcomma }}건입니다.
+        </p>
+        {% include 'core/components/searchable_table.html' with table_head_template='core/tables/my_activities_head.html' table_body_template='core/tables/my_activities_body.html' search_placeholder='제목, 내용, 라이트닝 주소, 상태 검색' my_activities_with_no=my_activities_with_no page_obj=my_activities_page_obj page_param=my_activities_page_param table_class='activity-request-table' %}
+    </section>
+
+    <section class="box compact-box">
+        <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+            <h3 class="title is-6 mb-0">내 정산 현황</h3>
+        </div>
+        <p class="is-size-7 has-text-grey mb-3">
+            내가 요청한 정산 진행 상태를 확인합니다.
+            현재 {{ my_settlements_total_count|default:0|intcomma }}건입니다.
+        </p>
+        {% include 'core/components/searchable_table.html' with table_head_template='core/tables/my_settlements_head.html' table_body_template='core/tables/my_settlements_body.html' search_placeholder='제목, 결과 내용, 상태 검색' my_settlements_with_no=my_settlements_with_no page_obj=my_settlements_page_obj page_param=my_settlements_page_param table_class='activity-request-table activity-settlement-table' %}
+    </section>
+
+    <section class="box compact-box">
+        <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+            <h3 class="title is-6 mb-0">내 처리 타임라인</h3>
+        </div>
+        <p class="is-size-7 has-text-grey mb-3">
+            내 계정의 회원 처리/회비 납부/정산 완료 이력을 확인합니다.
+            현재 {{ member_timeline_total_count|default:0|intcomma }}건입니다.
+        </p>
+        {% include 'core/components/searchable_table.html' with table_head_template='core/tables/logs_timeline_head.html' table_body_template='core/tables/logs_timeline_body.html' search_placeholder='유형, 내용, 상세, 처리자 검색' timeline_rows=member_timeline_rows page_obj=member_timeline_page_obj page_param=member_timeline_page_param %}
+    </section>
+{% else %}
+    <section class="box compact-box mb-0">
+        <h3 class="title is-6 mb-2">진행 안내</h3>
+        {% if member.status == 'pending' %}
+            <p class="is-size-7 has-text-grey mb-0">승인 완료 전에는 연도별 회비표가 생성되지 않습니다. 운영진 처리 후 자동으로 표시됩니다.</p>
+        {% elif member.status == 'rejected' %}
+            <p class="is-size-7 has-text-grey mb-0">반려 상태에서는 연도별 회비표가 비활성화됩니다. 재신청 승인 후 다시 활성화됩니다.</p>
+        {% else %}
+            <p class="is-size-7 has-text-grey mb-0">현재 상태에서는 연도별 회비표를 표시하지 않습니다.</p>
+        {% endif %}
+    </section>
+{% endif %}
+{% endblock %}

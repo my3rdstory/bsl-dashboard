@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}BSL 백오피스 | 홈{% endblock %}
+
+{% block content %}
+{% if nav_is_backoffice_admin %}
+<section class="box compact-box mt-1 home-panel">
+    <h3 class="title is-6 mb-3">대기 정보</h3>
+    <section class="columns module-grid is-variable is-2 home-kpi-grid">
+        {% for card in waiting_info_cards %}
+            <div class="column is-12-mobile is-4-desktop">
+                <article class="card dashboard-card compact-card home-kpi-card home-waiting-card">
+                    <div class="card-content">
+                        <p class="heading">{{ card.title }}</p>
+                        <p class="title is-5">{{ card.value|intcomma }} <span class="home-kpi-unit">{{ card.unit }}</span></p>
+                        <p class="module-detail">{{ card.caption }}</p>
+                        <a class="button is-small mt-3 waiting-action-button" href="{{ card.url }}">{{ card.button_label }}</a>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </section>
+</section>
+{% endif %}
+
+<section class="columns is-variable is-2 mt-1 home-equal-height-row">
+    <div class="column is-12-tablet is-6-desktop">
+        <section class="box compact-box home-panel">
+            <h3 class="title is-6 mb-3">회비 정보</h3>
+            <section class="columns module-grid is-variable is-2 home-kpi-grid">
+                <div class="column is-12-mobile is-12-tablet is-4-desktop">
+                    <article class="card dashboard-card compact-card home-kpi-card">
+                        <div class="card-content">
+                            <p class="heading">총 합계</p>
+                            <p class="title is-5">
+                                {% if collection_balance.total_sats == None %}
+                                    -
+                                {% else %}
+                                    {{ collection_balance.total_sats|intcomma }}
+                                {% endif %}
+                                <span class="home-kpi-unit">sats</span>
+                            </p>
+                        </div>
+                    </article>
+                </div>
+                <div class="column is-12-mobile is-12-tablet is-4-desktop">
+                    <article class="card dashboard-card compact-card home-kpi-card">
+                        <div class="card-content">
+                            <p class="heading">온체인 잔액</p>
+                            <p class="title is-5">
+                                {% if collection_balance.onchain_sats == None %}
+                                    -
+                                {% else %}
+                                    {{ collection_balance.onchain_sats|intcomma }}
+                                {% endif %}
+                                <span class="home-kpi-unit">sats</span>
+                            </p>
+                        </div>
+                    </article>
+                </div>
+                <div class="column is-12-mobile is-12-tablet is-4-desktop">
+                    <article class="card dashboard-card compact-card home-kpi-card">
+                        <div class="card-content">
+                            <p class="heading">라이트닝 잔액</p>
+                            <p class="title is-5">
+                                {% if collection_balance.lightning_sats == None %}
+                                    -
+                                {% else %}
+                                    {{ collection_balance.lightning_sats|intcomma }}
+                                {% endif %}
+                                <span class="home-kpi-unit">sats</span>
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+            {% if collection_balance.note %}
+                <p class="is-size-7 has-text-grey mt-2 mb-0">회비 주소 등록자: {{ collection_balance.source_owner|default:'-' }}</p>
+                <p class="is-size-7 has-text-grey mb-0">{{ collection_balance.note }}</p>
+            {% else %}
+                <p class="is-size-7 has-text-grey mt-2 mb-0">회비 주소 등록자: {{ collection_balance.source_owner|default:'-' }}</p>
+            {% endif %}
+        </section>
+    </div>
+    <div class="column is-12-tablet is-6-desktop">
+        <section class="box compact-box home-panel">
+            <h3 class="title is-6 mb-3">회원 정보</h3>
+            <section class="columns module-grid is-variable is-2 home-kpi-grid">
+                {% for card in member_info_cards %}
+                    <div class="column is-12-mobile is-12-tablet is-4-desktop">
+                        <article class="card dashboard-card compact-card home-kpi-card">
+                            <div class="card-content">
+                                <p class="heading">{{ card.title }}</p>
+                                <p class="title is-5">{{ card.value|intcomma }} <span class="home-kpi-unit">{{ card.unit }}</span></p>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </section>
+        </section>
+    </div>
+</section>
+
+<section class="box compact-box mt-1 home-panel">
+    <section class="columns is-variable is-2 home-kpi-split">
+        <div class="column is-12-tablet is-6-desktop">
+            <article class="card dashboard-card compact-card home-chart-card">
+                <div class="card-content">
+                    <p class="heading">월별 회비 총량</p>
+                    <p class="is-size-7 home-chart-subtitle">{{ now|date:"Y" }}년 1월~12월 기준</p>
+                    <div class="home-chart-wrap" role="img" aria-label="월별 회비 총량 막대차트">
+                        <canvas
+                            class="home-chart-canvas"
+                            id="home-dues-chart"
+                            height="220"
+                            data-chart-labels="{% for label in dues_chart.labels %}{{ label }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                            data-chart-values="{% for value in dues_chart.values %}{{ value }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                            aria-label="월별 회비 총량 막대차트"
+                        ></canvas>
+                    </div>
+                    <p class="home-chart-summary">최대: {{ dues_chart.max_value|intcomma }} sats</p>
+                </div>
+            </article>
+        </div>
+        <div class="column is-12-tablet is-6-desktop">
+            <article class="card dashboard-card compact-card home-chart-card">
+                <div class="card-content">
+                    <p class="heading">회원총수 추이</p>
+                    <p class="is-size-7 home-chart-subtitle">{{ now|date:"Y" }}년 1월~12월 기준</p>
+                    <div class="home-chart-wrap" role="img" aria-label="월별 회원총수 선그래프">
+                        <canvas
+                            class="home-chart-canvas"
+                            id="home-member-growth-chart"
+                            height="220"
+                            data-chart-labels="{% for label in member_growth_chart.labels %}{{ label }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                            data-chart-values="{% for value in member_growth_chart.values %}{{ value }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                            aria-label="월별 회원총수 선그래프"
+                        ></canvas>
+                    </div>
+                    <p class="home-chart-summary">최대: {{ member_growth_chart.max_value|intcomma }}명</p>
+                </div>
+            </article>
+        </div>
+    </section>
+</section>
+
+<section class="box compact-box mt-1 home-panel">
+    <h3 class="title is-6 mb-3">활동 정보</h3>
+    <section class="columns module-grid is-variable is-2 home-kpi-grid">
+        {% for card in activity_info_cards %}
+            <div class="column {{ activity_info_column_class|default:'is-12-mobile is-4-desktop' }}">
+                <article class="card dashboard-card compact-card home-kpi-card">
+                    <div class="card-content">
+                        <p class="heading">{{ card.title }}</p>
+                        <p class="title is-5">{{ card.value|intcomma }} <span class="home-kpi-unit">{{ card.unit }}</span></p>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </section>
+</section>
+
+{% if recruiting_message_html %}
+<section class="box compact-box mt-1 home-panel">
+    <div class="is-flex is-justify-content-space-between is-align-items-center is-flex-wrap-wrap mb-3">
+        <h3 class="title is-6 mb-0">회원 모집 공유 메시지</h3>
+        <p class="is-size-7 has-text-grey mb-0">최근 수정: {{ recruiting_message_updated_at|date:'Y-m-d H:i:s' }}</p>
+    </div>
+    <div class="content is-size-7 home-share-message-content mb-3">
+        {{ recruiting_message_html|safe }}
+    </div>
+    <textarea id="home-recruiting-message-copy" hidden>{{ recruiting_message_copy_text }}</textarea>
+    <div class="is-flex is-justify-content-flex-end">
+        <button class="button is-small is-success" type="button" data-copy-target="#home-recruiting-message-copy" data-copy-toast="메시지를 복사했습니다.">메시지 복사</button>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+<script src="{% static 'js/home-dashboard-charts.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}주소 등록{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">주소 등록</h2>
+    <p class="is-size-7 has-text-grey mb-4">
+        비트코인 온체인 주소와 블링크 연동 정보를 등록/교체합니다. 블링크 API Key는 저장 시 암호화되며 화면에는 마스킹으로 표시됩니다.
+    </p>
+
+    {% if current_address %}
+        <div class="box compact-box mb-4 current-address-panel">
+            <h3 class="title is-6 mb-3">현재 사용 주소</h3>
+            <div class="table-container">
+                <table class="table is-fullwidth is-size-7 compact-table">
+                    <tbody>
+                        <tr>
+                            <th>비트코인 온체인 주소</th>
+                            <td class="mono-cell address-break">{{ current_address.bitcoin_onchain_address }}</td>
+                        </tr>
+                        <tr>
+                            <th>블링크 주소</th>
+                            <td class="mono-cell address-break">{{ current_address.lightning_address }}</td>
+                        </tr>
+                        <tr>
+                            <th>블링크 API Key</th>
+                            <td class="mono-cell address-break">{{ current_address.masked_blink_api_key }}</td>
+                        </tr>
+                        <tr>
+                            <th>블링크 Wallet ID</th>
+                            <td class="mono-cell address-break">{{ current_address.blink_wallet_id|default:'-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>등록일시</th>
+                            <td>{{ current_address.created_at|date:'Y-m-d H:i:s' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="box compact-box mb-4">
+        <h3 class="title is-6 mb-3">
+            {% if current_address %}주소 교체{% else %}주소 저장{% endif %}
+        </h3>
+        <div class="basic-settings-form-wrap">
+            <form method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label is-size-7" for="{{ form.bitcoin_onchain_address.id_for_label }}">비트코인 온체인 주소</label>
+                    {{ form.bitcoin_onchain_address }}
+                    {% if form.bitcoin_onchain_address.errors %}
+                        <p class="help is-danger">{{ form.bitcoin_onchain_address.errors|join:', ' }}</p>
+                    {% endif %}
+                </div>
+                <div class="columns is-variable is-2 setting-inline-row">
+                    <div class="column is-4-desktop is-12-mobile">
+                        <div class="field">
+                            <label class="label is-size-7" for="{{ form.blink_lightning_address.id_for_label }}">블링크 주소</label>
+                            {{ form.blink_lightning_address }}
+                            {% if form.blink_lightning_address.errors %}
+                                <p class="help is-danger">{{ form.blink_lightning_address.errors|join:', ' }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-12-mobile">
+                        <div class="field">
+                            <label class="label is-size-7" for="{{ form.blink_api_key.id_for_label }}">블링크 API Key</label>
+                            {{ form.blink_api_key }}
+                            {% if current_masked_blink_api_key %}
+                                <p class="help is-size-7">현재 저장값: <span class="mono-cell">{{ current_masked_blink_api_key }}</span> (변경 시에만 새 키 입력)</p>
+                            {% endif %}
+                            {% if form.blink_api_key.errors %}
+                                <p class="help is-danger">{{ form.blink_api_key.errors|join:', ' }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-12-mobile">
+                        <div class="field">
+                            <label class="label is-size-7" for="{{ form.blink_wallet_id.id_for_label }}">블링크 Wallet ID</label>
+                            {{ form.blink_wallet_id }}
+                            <p class="help is-size-7">미입력 시 API Key 계정의 BTC 지갑 ID를 자동 선택합니다.</p>
+                            {% if form.blink_wallet_id.errors %}
+                                <p class="help is-danger">{{ form.blink_wallet_id.errors|join:', ' }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons are-small mb-0">
+                    <button class="button is-success is-small" type="submit">
+                        {% if current_address %}교체{% else %}저장{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="box compact-box mb-0">
+        <h3 class="title is-6 mb-3">과거 주소 목록</h3>
+        <div class="table-container">
+            <table class="table is-fullwidth is-size-7 compact-table member-list-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>상태</th>
+                        <th>비트코인 온체인 주소</th>
+                        <th>블링크 주소</th>
+                        <th class="address-history-api-key-col">블링크 API Key</th>
+                        <th>블링크 Wallet ID</th>
+                        <th>저장일시</th>
+                        <th>교체일시</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in history_rows %}
+                        <tr>
+                            <td class="num-cell">{{ forloop.revcounter|intcomma }}</td>
+                            <td>
+                                {% if row.is_current %}
+                                    <span class="tag is-success is-light">현재 사용</span>
+                                {% else %}
+                                    <span class="tag is-light">이력</span>
+                                {% endif %}
+                            </td>
+                            <td class="mono-cell address-break">{{ row.bitcoin_onchain_address }}</td>
+                            <td class="mono-cell address-break">{{ row.lightning_address }}</td>
+                            <td class="mono-cell address-history-api-key-col">{{ row.masked_blink_api_key }}</td>
+                            <td class="mono-cell address-break">{{ row.blink_wallet_id|default:'-' }}</td>
+                            <td>{{ row.created_at|date:'Y-m-d H:i:s' }}</td>
+                            <td>{{ row.replaced_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="has-text-grey">등록된 주소 이력이 없습니다.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

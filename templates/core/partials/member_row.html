@@ -1,0 +1,63 @@
+{% load humanize %}
+<tr
+    id="member-row-{{ member.id }}"
+    data-search-row
+    data-search-key="{{ member.display_name }} {{ member.lightning_identifier }} {{ member.requested_at|date:'Y-m-d H:i' }}"
+>
+    <td class="num-cell">{{ row_no|default:'-'|intcomma }}</td>
+    <td>
+        <a class="member-detail-link" href="{% url 'core:staff-member-detail' member.id %}">
+            <div class="nickname-title-row">
+                <span>{{ member.display_name }}</span>
+                {% if member.is_backoffice_admin %}
+                    {% include 'core/components/backoffice_admin_badge_icon.html' %}
+                {% endif %}
+            </div>
+            <div class="nickname-lightning mono-cell">({{ member.lightning_identifier }})</div>
+        </a>
+    </td>
+    <td>{{ member.requested_at|date:'Y-m-d H:i' }}</td>
+    <td>
+        <div class="first-check-control">
+            <input
+                class="input is-small first-check-input"
+                type="text"
+                id="first-reviewed-at-{{ member.id }}"
+                name="first_reviewed_at"
+                placeholder="YYYY-MM-DDTHH:MM:SS"
+                value="{{ member.reviewed_at|date:'Y-m-d\\TH:i:s' }}"
+            >
+            <button type="button" class="first-check-icon-button" data-open-datetime-picker aria-label="날짜/시간 선택">
+                <span class="first-check-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+    </td>
+    <td>
+        {% if member.status == 'pending' %}
+            <div class="buttons are-small mb-0">
+                <button
+                    class="button is-success is-small"
+                    type="button"
+                    data-open-approve-modal
+                    data-approve-url="{% url 'core:staff-member-approve' member.id %}"
+                    data-member-label="{{ member.display_name }} ({{ member.lightning_identifier }})"
+                    data-first-check-target="#first-reviewed-at-{{ member.id }}"
+                >
+                    승인
+                </button>
+                <button
+                    class="button is-danger is-small"
+                    type="button"
+                    data-open-reject-modal
+                    data-reject-url="{% url 'core:staff-member-reject' member.id %}"
+                    data-member-label="{{ member.display_name }} ({{ member.lightning_identifier }})"
+                    data-first-check-target="#first-reviewed-at-{{ member.id }}"
+                >
+                    반려
+                </button>
+            </div>
+        {% else %}
+            <span class="tag is-light">{{ member.get_status_display }}</span>
+        {% endif %}
+    </td>
+</tr>

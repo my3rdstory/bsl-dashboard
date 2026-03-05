@@ -1,0 +1,115 @@
+.content-pane .label {
+    color: #e4edf5 !important;
+}
+
+.content-pane .help {
+    color: #aebccc !important;
+}
+
+.content-pane .help.is-danger {
+    color: #ff9b9b !important;
+}
+
+.content-pane .input,
+.content-pane .textarea,
+.content-pane .select select {
+    background: #1a232c !important;
+    color: #d5e0e8 !important;
+    border: 1px solid #334554 !important;
+}
+
+.content-pane input[type="number"] {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.content-pane input[type="number"]::-webkit-outer-spin-button,
+.content-pane input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.content-pane .input:focus,
+.content-pane .textarea:focus,
+.content-pane .select select:focus {
+    border-color: #53728a !important;
+    box-shadow: 0 0 0 0.1rem rgba(73, 111, 137, 0.28) !important;
+}
+
+.content-pane input[type="month"] {
+    color-scheme: dark;
+    background: #1a232c !important;
+    color: #d5e0e8 !important;
+    border: 1px solid #334554 !important;
+}
+
+.content-pane input[type="month"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.85);
+}
+
+.first-check-control {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.first-check-input {
+    width: 11.5rem !important;
+    min-width: 11.5rem;
+    max-width: 11.5rem;
+    padding-right: 2rem !important;
+}
+
+.first-check-icon-button {
+    position: absolute;
+    right: 0.38rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.35rem;
+    height: 1.35rem;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.first-check-icon-button:focus {
+    outline: none;
+}
+
+.first-check-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.9rem;
+    height: 0.9rem;
+    transform: translate(-50%, -50%);
+    border: 1.5px solid #90a7b7;
+    border-radius: 2px;
+    opacity: 0.9;
+}
+
+.first-check-icon::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: -2px;
+    height: 3px;
+    background: #90a7b7;
+    border-radius: 1px;
+}
+
+.content-pane input[type="datetime-local"] {
+    color-scheme: dark;
+    background: #1a232c !important;
+    color: #d5e0e8 !important;
+    border: 1px solid #334554 !important;
+}
+
+.content-pane input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+}

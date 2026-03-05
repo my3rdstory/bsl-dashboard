@@ -1,0 +1,73 @@
+{% load humanize %}
+<tr
+    data-search-row
+    data-search-key="{{ member.display_name }} {{ member.lightning_identifier }} {{ member.get_status_display }} {{ member.requested_at|date:'Y-m-d H:i:s' }} {{ member.lifecycle.signed_up_at|date:'Y-m-d H:i:s' }}"
+>
+    <td class="num-cell">{{ row_no|default:'-'|intcomma }}</td>
+    <td>{{ member.get_status_display }}</td>
+    <td class="nickname-cell">
+        <a class="member-detail-link" href="{% url 'core:staff-member-detail' member.id %}">
+            <div class="nickname-title-row">
+                <span>{{ member.display_name }}</span>
+                {% if member.is_backoffice_admin %}
+                    {% include 'core/components/backoffice_admin_badge_icon.html' %}
+                {% endif %}
+            </div>
+            <div class="nickname-lightning mono-cell">({{ member.lightning_identifier }})</div>
+        </a>
+    </td>
+    <td>
+        {% if member_list_mode == 'dues-request' %}
+            {{ member.requested_at|date:'Y-m-d H:i:s'|default:'-' }}
+        {% else %}
+            {{ member.lifecycle.signed_up_at|date:'Y-m-d H:i:s'|default:'-' }}
+        {% endif %}
+    </td>
+    {% if member_list_mode == 'dues-request' %}
+    <td class="mono-cell num-cell">{{ dues_amount_sats|default:0|intcomma }} sats</td>
+    {% else %}
+    <td>{{ member.settlement.dues_paid_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+    <td>{{ member.activity.claimed_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+    <td>{{ member.activity.processed_at|date:'Y-m-d H:i:s'|default:'-' }}</td>
+    {% endif %}
+    <td>
+        <div class="buttons are-small mb-0">
+            {% if member_list_mode == 'dues-request' %}
+            <form method="post" action="{% url 'core:staff-member-request-dues' member.id %}" class="inline-form">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button class="button {% if is_due_requested %}is-dark{% else %}is-link{% endif %} is-small" type="submit">
+                    {% if is_due_requested %}회비요청완료{% else %}회비지급요청{% endif %}
+                </button>
+            </form>
+            <button
+                class="button is-success is-small"
+                type="button"
+                data-open-confirm-dues-modal
+                data-confirm-dues-url="{% url 'core:staff-member-confirm-dues' member.id %}"
+                data-member-label="{{ member.display_name }} ({{ member.lightning_identifier }})"
+            >
+                회비확인
+            </button>
+            {% endif %}
+            <button
+                class="button is-warning is-small"
+                type="button"
+                data-open-reject-modal
+                data-reject-url="{% url 'core:staff-member-reject' member.id %}"
+                data-member-label="{{ member.display_name }} ({{ member.lightning_identifier }})"
+            >
+                반려
+            </button>
+            <button
+                class="button is-danger is-small"
+                type="button"
+                data-open-withdraw-modal
+                data-withdraw-url="{% url 'core:staff-member-withdraw' member.id %}"
+                data-member-label="{{ member.display_name }} ({{ member.lightning_identifier }})"
+            >
+                탈퇴
+            </button>
+        </div>
+    </td>
+</tr>

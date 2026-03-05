@@ -1,0 +1,29 @@
+.member-withdraw-page .member-withdraw-header {
+    border: 1px solid #5f3740;
+    background: linear-gradient(135deg, #221116 0%, #1d1014 100%);
+}
+
+.member-withdraw-page .member-withdraw-auth-panel .box {
+    border: 1px solid #5d3940;
+    background: linear-gradient(135deg, #1f1216 0%, #191015 100%);
+}
+
+.member-withdraw-page .member-withdraw-auth-panel .code-box {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+}
+
+.member-withdraw-page .member-withdraw-warning-box {
+    border: 1px solid #6f4d1f;
+    background: linear-gradient(135deg, #2a1d0f 0%, #22180f 100%);
+    color: #f6dca8;
+}
+
+.member-withdraw-page .member-withdraw-warning-list {
+    margin: 0.5rem 0 0;
+    padding-left: 1.1rem;
+}
+
+.member-withdraw-page .member-withdraw-warning-list li {
+    margin-bottom: 0.2rem;
+}

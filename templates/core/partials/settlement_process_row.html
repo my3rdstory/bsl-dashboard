@@ -1,0 +1,60 @@
+{% load humanize %}
+<tr
+    data-search-row
+    data-search-key="{{ activity.title }} {{ activity.member.display_name }} {{ activity.settlement_result_html|striptags }}{% for attachment in evidence_attachments %} {{ attachment.original_filename }}{% endfor %}"
+>
+    <td class="activity-title-cell">
+        <a class="activity-detail-link activity-title-preview-text" href="{% url 'core:staff-settlement-detail' activity.id %}">
+            {{ activity.title }}
+        </a>
+    </td>
+    <td class="nickname-cell activity-nickname-col">
+        <a class="member-detail-link" href="{% url 'core:staff-member-detail' activity.member.id %}">
+            <div class="nickname-title-row">
+                <span>{{ activity.member.display_name }}</span>
+                {% if activity.member.is_backoffice_admin %}
+                    {% include 'core/components/backoffice_admin_badge_icon.html' %}
+                {% endif %}
+            </div>
+            <div class="nickname-lightning mono-cell">({{ activity.member.lightning_identifier }})</div>
+        </a>
+    </td>
+    <td class="num-cell">{{ activity.amount_sats|intcomma }}</td>
+    <td class="activity-content-preview settlement-result-col">
+        <a class="activity-detail-link activity-content-preview-text" href="{% url 'core:staff-settlement-detail' activity.id %}">
+            {{ activity.settlement_result_html|striptags|default:'-' }}
+        </a>
+    </td>
+    <td>
+        {% if evidence_attachments %}
+            <div class="activity-attachment-list">
+                {% for attachment in evidence_attachments %}
+                    <a
+                        class="activity-attachment-link"
+                        href="{% url 'core:staff-activity-attachment-preview' attachment.id %}"
+                        data-open-attachment-preview
+                        data-preview-url="{% url 'core:staff-activity-attachment-preview' attachment.id %}"
+                        data-download-url="{% url 'core:staff-activity-attachment-download' attachment.id %}"
+                        data-content-type="{{ attachment.content_type|default:'' }}"
+                        data-filename="{{ attachment.original_filename }}"
+                    >{{ attachment.original_filename }}</a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <span class="has-text-grey">-</span>
+        {% endif %}
+    </td>
+    <td>
+        <form
+            method="post"
+            action="{% url 'core:staff-settlement-process-execute' activity.id %}"
+            data-settlement-process-form
+            data-activity-id="{{ activity.id }}"
+        >
+            {% csrf_token %}
+            <button class="button is-small activity-process-button" type="submit">
+                정산처리
+            </button>
+        </form>
+    </td>
+</tr>

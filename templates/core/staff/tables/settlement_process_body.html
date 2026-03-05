@@ -1,0 +1,6 @@
+{% for row in settlement_process_rows %}
+    {% include 'core/partials/settlement_process_row.html' with activity=row.activity evidence_attachments=row.evidence_attachments %}
+{% endfor %}
+<tr data-search-empty-row {% if settlement_process_rows %}hidden{% endif %}>
+    <td colspan="6" class="has-text-grey">정산 처리 대상 활동이 없습니다.</td>
+</tr>

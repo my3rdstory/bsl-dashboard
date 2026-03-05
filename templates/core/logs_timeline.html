@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}처리 타임라인{% endblock %}
+
+{% block content %}
+<section class="box compact-box home-panel">
+    <h2 class="title is-5 mb-1">처리 타임라인</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        회원 처리, 회비 납부, 정산 완료 로그를 시간순으로 확인합니다.
+        현재 {{ timeline_total_count|default:0|intcomma }}건입니다.
+    </p>
+    {% include 'core/components/searchable_table.html' with table_head_template='core/tables/logs_timeline_head.html' table_body_template='core/tables/logs_timeline_body.html' search_placeholder='유형, 내용, 상세, 처리자 검색' %}
+</section>
+{% endblock %}

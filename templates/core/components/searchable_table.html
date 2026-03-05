@@ -1,0 +1,28 @@
+<div class="searchable-table" data-searchable-table>
+    <div class="searchable-table-toolbar mb-3">
+        <input
+            class="input is-small searchable-table-input"
+            type="search"
+            placeholder="{{ search_placeholder|default:'검색어를 입력하세요' }}"
+            data-search-input
+            autocomplete="off"
+        >
+    </div>
+    <div class="table-container">
+        <table class="table is-fullwidth is-hoverable is-size-7 compact-table {{ table_class|default:'' }}" data-search-table>
+            <thead>
+                {% include table_head_template %}
+            </thead>
+            <tbody
+                data-search-body
+                {% if tbody_id %}id="{{ tbody_id }}"{% endif %}
+                {% if tbody_rows_url %}data-rows-url="{{ tbody_rows_url }}"{% endif %}
+                {% if tbody_state_url %}data-state-url="{{ tbody_state_url }}"{% endif %}
+                {% if tbody_state_revision %}data-state-revision="{{ tbody_state_revision }}"{% endif %}
+            >
+                {% include table_body_template %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'core/components/table_pagination.html' %}
+</div>

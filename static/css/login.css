@@ -1,0 +1,155 @@
+body.auth-page {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: radial-gradient(circle at 20% 15%, #1b232c 0%, #0b1015 55%, #070a0d 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    background: #121a22;
+    border: 1px solid #2a3743;
+    padding: 1.2rem 1.1rem;
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
+}
+
+.auth-brand {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.auth-brand img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 0.45rem;
+}
+
+.auth-brand p {
+    color: #b7c5d1;
+    margin: 0;
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+}
+
+.auth-guide {
+    color: #90a3b3;
+    font-size: 0.88rem;
+    margin: 0.25rem 0 1rem;
+    text-align: center;
+}
+
+.auth-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.auth-actions .button {
+    min-width: 240px;
+}
+
+.auth-sub-link {
+    margin-top: 0.65rem;
+    text-align: center;
+}
+
+.auth-sub-link a {
+    color: #8ac5f8;
+    font-size: 0.82rem;
+}
+
+.auth-sub-link a:hover {
+    color: #b7dbff;
+}
+
+.auth-panel {
+    margin-top: 0.9rem;
+}
+
+.auth-panel .nickname-input {
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    background: #1a232c !important;
+    color: #dce7ef !important;
+    border: 1px solid #334554 !important;
+}
+
+.auth-panel .nickname-input:focus {
+    border-color: #53728a !important;
+    box-shadow: 0 0 0 0.1rem rgba(73, 111, 137, 0.28) !important;
+}
+
+.auth-panel textarea,
+.auth-panel .textarea,
+.auth-panel .application-textarea {
+    min-height: 10rem;
+    resize: vertical;
+    background: #1a232c !important;
+    color: #dce7ef !important;
+    border: 1px solid #334554 !important;
+    line-height: 1.5;
+    -webkit-text-fill-color: #dce7ef !important;
+}
+
+.auth-panel textarea::placeholder,
+.auth-panel .textarea::placeholder,
+.auth-panel .application-textarea::placeholder {
+    color: #9eb0bf !important;
+}
+
+.auth-panel textarea:focus,
+.auth-panel .textarea:focus,
+.auth-panel .application-textarea:focus {
+    border-color: #53728a !important;
+    box-shadow: 0 0 0 0.1rem rgba(73, 111, 137, 0.28) !important;
+}
+
+.auth-panel .first-login-nickname-highlight {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #355267;
+    background: linear-gradient(135deg, #152633 0%, #1a3242 100%);
+}
+
+.auth-panel .first-login-nickname-label {
+    font-size: 0.72rem;
+    color: #bfd2df;
+    letter-spacing: 0.04em;
+}
+
+.auth-panel .first-login-nickname-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.52rem;
+    border: 1px solid #5a8aaa;
+    background: #24465d;
+    color: #f0f8ff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.auth-panel .image.auth-qr-wrap {
+    margin: 0 auto;
+    width: min(100%, 220px);
+    height: 220px;
+}
+
+@media (max-width: 520px) {
+    .auth-panel .image.auth-qr-wrap {
+        width: min(100%, 160px);
+        height: 160px;
+    }
+}

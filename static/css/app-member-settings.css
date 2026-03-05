@@ -1,0 +1,163 @@
+.address-break {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+}
+
+.address-form-wrap {
+    width: 35%;
+    min-width: 0;
+}
+
+.basic-settings-form-wrap {
+    width: 100%;
+    min-width: 0;
+}
+
+.setting-inline-row {
+    margin-bottom: 0.35rem !important;
+}
+
+.address-history-api-key-col {
+    width: 9rem;
+    max-width: 9rem;
+}
+
+.current-address-panel {
+    border-color: #3a4d5c !important;
+    background: linear-gradient(145deg, #121b24, #0f161f) !important;
+}
+
+.current-address-panel .title {
+    color: #f2f7fc !important;
+}
+
+.current-address-panel .table {
+    background-color: #111a24 !important;
+}
+
+.current-address-panel .table th {
+    color: #d3e0ea !important;
+    background-color: #17222d !important;
+}
+
+.current-address-panel .table td {
+    color: #f1f6fb !important;
+    background-color: #121d28 !important;
+}
+
+td.address-history-api-key-col {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.member-detail-link {
+    color: #dbe6ef;
+    text-decoration: none;
+}
+
+.member-detail-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.payment-proof-cell {
+    max-width: 28rem;
+}
+
+.payment-proof-line {
+    white-space: normal !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.42;
+}
+
+.member-application-note {
+    border: 1px solid #334554;
+    background: #121a22;
+    color: #dce7ef;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.84rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.member-detail-review-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.member-detail-review-card {
+    border: 1px solid #334554;
+    background: #121a22;
+    padding: 0.7rem 0.75rem;
+}
+
+.member-detail-review-card h4 {
+    color: #dce7ef;
+    font-weight: 600;
+}
+
+.member-review-log-table {
+    table-layout: fixed;
+}
+
+.member-review-log-table .member-review-note-col {
+    width: 50%;
+    max-width: 50%;
+}
+
+.member-review-note-wrap {
+    white-space: normal !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+}
+
+.member-review-actor-lightning {
+    margin-top: 0.08rem;
+    color: #b7c6d1;
+    white-space: normal !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+}
+
+.message-share-current-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: block;
+    list-style: disc;
+    list-style-position: outside;
+    padding-inline-start: 1.4rem;
+}
+
+.message-share-current-list > li {
+    margin: 0;
+    color: #d3dfea;
+    padding-left: 0.2rem;
+    margin-bottom: 0.34rem;
+}
+
+.message-share-current-list > li::marker {
+    color: #9cb5cb;
+}
+
+.message-share-current-sublist {
+    margin: 0.38rem 0 0.05rem;
+    padding-left: 1.15rem;
+    display: block;
+    list-style: circle;
+    list-style-position: outside;
+}
+
+.message-share-current-sublist > li {
+    margin: 0.32rem 0;
+    color: #d8e5ef;
+}
+
+.message-share-current-sublist > li::marker {
+    color: #9cb5cb;
+}

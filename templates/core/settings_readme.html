@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}README{% endblock %}
+
+{% block content %}
+<section class="box compact-box settings-readme-box">
+    <h2 class="title is-5 mb-2">README</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        저장소 루트의 <code>README.md</code>를 화면에서 확인할 수 있습니다.
+    </p>
+
+    {% if readme_error %}
+        <article class="message is-warning mt-3">
+            <div class="message-body">{{ readme_error }}</div>
+        </article>
+    {% else %}
+        <div class="readme-view-wrap">
+            <article class="readme-content">
+                {{ readme_html|safe }}
+            </article>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

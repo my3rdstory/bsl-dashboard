@@ -1,0 +1,14 @@
+<tr>
+    <th>No.</th>
+    <th>상태</th>
+    <th>닉네임</th>
+    <th>{% if member_list_mode == 'dues-request' %}신청일{% else %}회원가입일시{% endif %}</th>
+    {% if member_list_mode == 'dues-request' %}
+    <th class="num-cell">회비</th>
+    {% else %}
+    <th>회비납부일시</th>
+    <th>활동비 청구일시</th>
+    <th>활동비 처리일시</th>
+    {% endif %}
+    <th>처리</th>
+</tr>

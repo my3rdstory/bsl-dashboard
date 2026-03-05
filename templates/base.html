@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BSL 백오피스{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/bsl-logo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'vendor/bulma/bulma.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block extra_head %}{% endblock %}
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="{% static 'js/app-toast.js' %}" defer></script>
+    <script src="{% static 'js/searchable-table.js' %}" defer></script>
+    <script src="{% static 'js/mobile-nav.js' %}" defer></script>
+    <script src="{% static 'js/member-approval-modal.js' %}" defer></script>
+    <script src="{% static 'js/copy-value.js' %}" defer></script>
+    <script src="{% static 'js/number-input.js' %}" defer></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <header class="top-nav">
+        <div class="top-nav-left">
+            <div class="brand-wrap">
+                <img class="brand-logo" src="{% static 'img/bsl-logo.png' %}" alt="BSL 로고">
+                <div>
+                    <p class="eyebrow mb-0">BSL ADMIN PORTAL</p>
+                    <strong>회원/회비 운영 대시보드</strong>
+                </div>
+            </div>
+        </div>
+        <button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav-panel" data-mobile-nav-toggle>
+            <span class="mobile-nav-toggle__icon" aria-hidden="true">
+                {% include 'core/components/griddy_icon.html' with icon_name='Menu' class_name='mobile-nav-menu-icon' %}
+            </span>
+            <span class="sr-only">메뉴</span>
+        </button>
+    </header>
+
+    <div class="mobile-nav-backdrop" data-mobile-nav-backdrop aria-hidden="true"></div>
+    <aside class="mobile-nav-panel" id="mobile-nav-panel" data-mobile-nav-panel aria-hidden="true">
+        <div class="mobile-nav-panel-inner">
+            <div class="mobile-nav-panel__top">
+                <h2 class="title is-6 mb-0">메뉴</h2>
+                <button class="mobile-nav-panel-close" type="button" data-mobile-nav-close aria-label="메뉴 닫기">
+                    {% include 'core/components/griddy_icon.html' with icon_name='ArrowRight' class_name='mobile-nav-menu-icon mobile-nav-close-icon' %}
+                    <span class="sr-only">메뉴 닫기</span>
+                </button>
+            </div>
+            {% include 'core/components/sidebar_menu_list.html' %}
+        </div>
+    </aside>
+
+    <div class="app-shell">
+        <aside class="left-sidebar">
+            {% include 'core/components/sidebar_menu_list.html' %}
+        </aside>
+
+        <main class="content-pane">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% include 'core/components/app_toast.html' %}
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

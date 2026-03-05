@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block title %}정산 처리{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">정산 처리</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        정산요청 상태 활동을 확인하고 블링크 라이트닝 자동 전송으로 정산완료 처리합니다.
+        현재 {{ settlement_process_total_count|default:0|intcomma }}건입니다.
+    </p>
+
+    {% include 'core/components/searchable_table.html' with table_head_template='core/staff/tables/settlement_process_head.html' table_body_template='core/staff/tables/settlement_process_body.html' search_placeholder='제목, 닉네임, 결과, 첨부파일명 검색' table_class='activity-request-table settlement-process-table' %}
+</section>
+
+<section class="settlement-logbar is-hidden" data-settlement-logbar>
+    <div class="settlement-logbar-head">
+        <strong data-settlement-logbar-title>정산 처리 로그</strong>
+        <button class="button is-small" type="button" data-settlement-logbar-close>닫기</button>
+    </div>
+    <div class="settlement-logbar-body" data-settlement-logbar-lines></div>
+</section>
+{% include 'core/components/activity_attachment_preview_modal.html' %}
+<script src="{% static 'js/settlement-process-log.js' %}" defer></script>
+{% endblock %}

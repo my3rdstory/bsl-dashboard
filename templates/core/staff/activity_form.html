@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}{% if is_edit_mode %}활동 수정{% else %}활동 등록{% endif %}{% endblock %}
+
+{% block content %}
+<section
+    class="box compact-box activity-form-box"
+    data-activity-form-root
+    data-max-files="{{ max_attachments }}"
+    data-max-size-bytes="{{ max_attachment_size_bytes }}"
+    data-max-content-chars="{{ max_content_chars }}"
+>
+    <h2 class="title is-5 mb-1">{% if is_edit_mode %}활동 수정{% else %}활동 등록{% endif %}</h2>
+    <p class="is-size-7 has-text-grey mb-4">
+        {% if is_edit_mode %}
+            등록한 활동 내용을 수정할 수 있습니다.
+        {% else %}
+            활동 내용을 등록하면 활동 현황 목록에서 확인하고 정산 처리할 수 있습니다.
+        {% endif %}
+    </p>
+
+    <form method="post" enctype="multipart/form-data" data-activity-form>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="help is-danger mb-2">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="field">
+            <label class="label is-size-7" for="{{ form.title.id_for_label }}">제목</label>
+            {{ form.title }}
+            <p class="help is-size-7">최대 300자, 필수</p>
+            {% if form.title.errors %}
+                <p class="help is-danger">{{ form.title.errors|join:', ' }}</p>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label class="label is-size-7">내용</label>
+            <div class="activity-editor" data-activity-editor></div>
+            {{ form.content_html }}
+            <p class="help is-size-7">Quill 에디터로 작성, 필수 (최대 {{ max_content_chars|intcomma }}자, 초과 시 자동 잘림)</p>
+            <p class="help is-size-7 activity-content-counter"><span data-content-char-count>0</span> / {{ max_content_chars|intcomma }}자</p>
+            <p class="help is-danger is-hidden" data-content-error>내용을 입력해 주세요.</p>
+            {% if form.content_html.errors %}
+                <p class="help is-danger">{{ form.content_html.errors|join:', ' }}</p>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label class="label is-size-7" for="activity-attachments">첨부파일</label>
+            {% if is_edit_mode %}
+                {% with existing_attachments=activity.attachments.all %}
+                    {% if existing_attachments %}
+                        <div class="mb-2">
+                            <p class="help is-size-7 mb-1">현재 첨부</p>
+                            <div class="activity-attachment-list">
+                                {% for attachment in existing_attachments %}
+                                    <a
+                                        class="activity-attachment-link"
+                                        href="{% url 'core:staff-activity-attachment-download' attachment.id %}"
+                                    >{{ attachment.original_filename }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+            <div class="activity-file-dropzone" data-file-dropzone tabindex="0">
+                <p class="mb-1">파일을 이곳에 드래그&드롭하거나 클릭해 선택하세요.</p>
+                <p class="is-size-7 has-text-grey mb-0">
+                    최대 {{ max_attachments }}개, 파일당 {{ max_attachment_size_mb }}MB
+                    {% if is_edit_mode %}(새 파일은 기존 첨부에 추가됩니다){% endif %}
+                </p>
+            </div>
+            <input
+                id="activity-attachments"
+                name="attachments"
+                type="file"
+                class="activity-file-input"
+                data-file-input
+                multiple
+            >
+            <p class="help is-danger is-hidden" data-file-error></p>
+            <ul class="activity-file-list" data-file-list></ul>
+        </div>
+
+        <div class="columns is-variable is-2 setting-inline-row">
+            <div class="column is-4-desktop is-12-mobile">
+                <div class="field">
+                    <label class="label is-size-7" for="{{ form.amount_sats.id_for_label }}">활동비 (sats)</label>
+                    {{ form.amount_sats }}
+                    <p class="help is-size-7">숫자만 입력</p>
+                    {% if form.amount_sats.errors %}
+                        <p class="help is-danger">{{ form.amount_sats.errors|join:', ' }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column is-4-desktop is-12-mobile">
+                <div class="field">
+                    <label class="label is-size-7" for="{{ form.lightning_address.id_for_label }}">라이트닝 주소</label>
+                    {{ form.lightning_address }}
+                    <p class="help is-size-7">최대 100자, 필수</p>
+                    {% if form.lightning_address.errors %}
+                        <p class="help is-danger">{{ form.lightning_address.errors|join:', ' }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column is-4-desktop is-12-mobile">
+                <div class="field">
+                    <label class="label is-size-7" for="{{ form.evidence_url.id_for_label }}">근거 링크</label>
+                    {{ form.evidence_url }}
+                    <p class="help is-size-7">디스코드 PR 링크 주소를 입력해 주세요. (최대 100자)</p>
+                    {% if form.evidence_url.errors %}
+                        <p class="help is-danger">{{ form.evidence_url.errors|join:', ' }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-form-actions mt-2">
+            <a class="button is-small" href="{% url 'core:staff-activities' %}">목록으로</a>
+            <button class="button is-small activity-submit-button" type="submit">
+                {% if is_edit_mode %}수정{% else %}등록{% endif %}
+            </button>
+        </div>
+    </form>
+</section>
+<link rel="stylesheet" href="{% static 'vendor/quill/quill.snow.css' %}">
+<script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+<script src="{% static 'js/activity-form.js' %}" defer></script>
+{% endblock %}

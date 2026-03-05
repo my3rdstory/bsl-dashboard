@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}승인대기 회원{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">승인대기 회원</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        라이트닝 인증 후 닉네임과 가입 신청 내용을 저장했고 아직 승인되지 않은 회원 목록입니다.
+        현재 {{ pending_total_count|default:0|intcomma }}명입니다.
+    </p>
+
+    {% include 'core/components/searchable_table.html' with table_head_template='core/staff/tables/members_pending_head.html' table_body_template='core/staff/tables/members_pending_body.html' search_placeholder='닉네임 또는 라이트닝 ID 검색' %}
+</section>
+
+<div class="modal" data-approve-modal>
+    <div class="modal-background" data-close-approve-modal></div>
+    <div class="modal-card approve-modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">회원 승인</p>
+            <button class="delete" aria-label="close" type="button" data-close-approve-modal></button>
+        </header>
+        <form method="post" data-approve-form>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <section class="modal-card-body">
+                <p class="is-size-7 has-text-grey mb-3">대상: <strong data-approve-member-label>-</strong></p>
+                <div class="field">
+                    <label class="label is-size-7">날짜임의지정</label>
+                    <div class="first-check-control">
+                        <input
+                            class="input is-small first-check-input"
+                            type="text"
+                            name="first_reviewed_at"
+                            data-approve-first-reviewed-at
+                            placeholder="YYYY-MM-DDTHH:MM:SS"
+                        >
+                        <button type="button" class="first-check-icon-button" data-open-datetime-picker aria-label="날짜/시간 선택">
+                            <span class="first-check-icon" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="field mb-0">
+                    <label class="label is-size-7">승인근거</label>
+                    <textarea class="textarea is-small" rows="4" name="review_note" data-approve-note required></textarea>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-small" type="button" data-close-approve-modal>취소</button>
+                <button class="button is-success is-small" type="submit">승인 완료</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+{% include 'core/staff/components/reject_member_modal.html' with next_path=request.path %}
+{% endblock %}

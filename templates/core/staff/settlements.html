@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block title %}정산 현황{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">활동 정산 현황</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        정산요청 또는 정산완료 상태의 활동 목록입니다.
+        현재 {{ activity_settlement_total_count|default:0|intcomma }}건입니다.
+    </p>
+
+    {% url 'core:staff-settlements-state' as settlement_state_url %}
+    {% include 'core/components/searchable_table.html' with table_head_template='core/staff/tables/activity_settlements_head.html' table_body_template='core/staff/tables/activity_settlements_body.html' search_placeholder='제목, 결과 내용, 닉네임, 라이트닝 주소 검색' table_class='activity-request-table activity-settlement-table' tbody_id='activity-settlements-body' tbody_rows_url=activity_settlement_rows_url tbody_state_url=settlement_state_url tbody_state_revision=activity_settlement_revision %}
+</section>
+<script src="{% static 'js/settlements-live-update.js' %}" defer></script>
+{% endblock %}

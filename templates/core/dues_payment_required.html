@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block title %}회비 납입 안내{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/member-status.css' %}">{% endblock %}
+
+{% block content %}
+{% include 'core/partials/member_status_overview.html' %}
+
+<section class="box compact-box dues-payment-box">
+    <h2 class="title is-5 mb-2">회비 납입 안내</h2>
+    <p class="is-size-7 has-text-grey mb-3">아래 결제 수단을 선택해 회비 납입을 진행해 주세요.</p>
+
+    {% if payment_error_message %}
+        <p class="has-text-danger is-size-7 mb-3">{{ payment_error_message }}</p>
+    {% endif %}
+    {% if payment_waiting_request_message %}
+        <p class="is-size-7 has-text-grey mb-3">{{ payment_waiting_request_message }}</p>
+    {% endif %}
+
+    {% if payment %}
+        <div class="tags mb-3">
+            <span class="tag is-warning">회비확인 대기</span>
+            <span class="tag is-dark mono-cell">{{ payment.amount_sats|intcomma }} sats</span>
+            <span class="tag is-light">신청월 {{ payment.request_month|date:'Y-m' }}</span>
+        </div>
+
+        <div class="dues-method-grid mb-4">
+            <form
+                method="post"
+                hx-post="{% url 'core:my-dues-payment-select-method' %}"
+                hx-target="#dues-payment-method-panel"
+                hx-swap="outerHTML"
+            >
+                {% csrf_token %}
+                <input type="hidden" name="payment_method" value="onchain">
+                <button class="button dues-method-button is-large is-fullwidth" type="submit">
+                    <img src="{% static 'img/icon-bitcoin.svg' %}" alt="비트코인 심볼" class="dues-method-icon">
+                    <span>온체인 결제</span>
+                </button>
+            </form>
+
+            <form
+                method="post"
+                hx-post="{% url 'core:my-dues-payment-select-method' %}"
+                hx-target="#dues-payment-method-panel"
+                hx-swap="outerHTML"
+            >
+                {% csrf_token %}
+                <input type="hidden" name="payment_method" value="lightning">
+                <button class="button dues-method-button is-large is-fullwidth" type="submit">
+                    <img src="{% static 'img/icon-lightning.svg' %}" alt="라이트닝 네트워크 심볼" class="dues-method-icon">
+                    <span>라이트닝 결제</span>
+                </button>
+            </form>
+        </div>
+
+        {% include 'core/partials/dues_payment_method_panel.html' %}
+    {% else %}
+        <p class="is-size-7 has-text-grey mb-0">운영진 처리 후 결제수단 선택 버튼이 표시됩니다.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}탈퇴 회원{% endblock %}
+
+{% block content %}
+<section class="box compact-box">
+    <h2 class="title is-5 mb-1">탈퇴 회원</h2>
+    <p class="is-size-7 has-text-grey mb-3">
+        탈퇴 처리되어 실제 회원 데이터는 삭제되고, 이력만 남은 목록입니다.
+        현재 {{ withdrawn_total_count|default:0|intcomma }}건입니다.
+    </p>
+
+    {% include 'core/components/searchable_table.html' with table_head_template='core/staff/tables/members_withdrawn_head.html' table_body_template='core/staff/tables/members_withdrawn_body.html' search_placeholder='닉네임 또는 라이트닝 ID 검색' %}
+</section>
+{% endblock %}

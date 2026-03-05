@@ -1,0 +1,38 @@
+{% load static %}
+<div
+    class="modal attachment-preview-modal"
+    data-attachment-preview-modal
+    data-pdf-worker-url="{% static 'vendor/pdfjs/pdf.worker.min.js' %}"
+>
+    <div class="modal-background" data-close-attachment-preview></div>
+    <div class="modal-card attachment-preview-modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title" data-attachment-preview-title>첨부 미리보기</p>
+            <button class="delete" aria-label="close" type="button" data-close-attachment-preview></button>
+        </header>
+        <section class="modal-card-body attachment-preview-modal-body">
+            <p class="is-size-7 has-text-grey mb-2" data-attachment-preview-loading>미리보기를 불러오는 중입니다...</p>
+            <p class="help is-danger is-hidden" data-attachment-preview-error></p>
+            <div class="attachment-preview-image-wrap is-hidden" data-attachment-preview-image-wrap>
+                <img class="attachment-preview-image" data-attachment-preview-image alt="첨부 이미지">
+            </div>
+            <div class="attachment-preview-pdf-wrap is-hidden" data-attachment-preview-pdf-wrap>
+                <div class="attachment-preview-pdf-pages" data-attachment-preview-pdf-pages></div>
+            </div>
+            <div class="attachment-preview-fallback is-hidden" data-attachment-preview-fallback>
+                <p class="is-size-7 mb-2">이 파일 형식은 모달 미리보기를 지원하지 않습니다.</p>
+                <a class="button is-small" target="_blank" rel="noopener noreferrer" data-attachment-preview-open-new>
+                    새 탭에서 열기
+                </a>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-small" target="_blank" rel="noopener noreferrer" data-attachment-preview-open-new>
+                새 탭에서 열기
+            </a>
+            <button class="button is-small" type="button" data-close-attachment-preview>닫기</button>
+        </footer>
+    </div>
+</div>
+<script src="{% static 'vendor/pdfjs/pdf.min.js' %}"></script>
+<script src="{% static 'js/activity-attachment-modal.js' %}" defer></script>

@@ -1,0 +1,43 @@
+.superadmin-auth-card {
+    max-width: 460px;
+}
+
+.superadmin-auth-form .label {
+    color: #b8c8d6;
+    margin-bottom: 0.35rem;
+}
+
+.superadmin-auth-form .input {
+    background: #1a232c;
+    color: #e2ebf2;
+    border: 1px solid #334554;
+}
+
+.superadmin-auth-form .input::placeholder {
+    color: #94a9ba;
+}
+
+.superadmin-auth-form .input:focus {
+    border-color: #53728a;
+    box-shadow: 0 0 0 0.1rem rgba(73, 111, 137, 0.28);
+}
+
+.superadmin-auth-form .notification {
+    background: #3a1d24;
+    border: 1px solid #6a2f3d;
+    color: #ffd6de;
+}
+
+.superadmin-auth-links {
+    margin-top: 0.9rem;
+    text-align: center;
+}
+
+.superadmin-auth-links a {
+    color: #8bc9ff;
+    font-size: 0.82rem;
+}
+
+.superadmin-auth-links a:hover {
+    color: #b6dfff;
+}

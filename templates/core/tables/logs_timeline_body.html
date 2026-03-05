@@ -1,0 +1,21 @@
+{% for row in timeline_rows %}
+    <tr
+        data-search-row
+        data-search-key="{{ row.event_type }} {{ row.title }} {{ row.detail }} {{ row.actor }}"
+    >
+        <td>{{ row.at|date:'Y-m-d H:i:s' }}</td>
+        <td>{{ row.event_type }}</td>
+        <td>
+            {% if row.url %}
+                <a class="member-detail-link" href="{{ row.url }}">{{ row.title }}</a>
+            {% else %}
+                <span>{{ row.title }}</span>
+            {% endif %}
+        </td>
+        <td>{{ row.detail }}</td>
+        <td>{{ row.actor }}</td>
+    </tr>
+{% endfor %}
+<tr data-search-empty-row {% if timeline_rows %}hidden{% endif %}>
+    <td colspan="5" class="has-text-grey">표시할 로그가 없습니다.</td>
+</tr>
