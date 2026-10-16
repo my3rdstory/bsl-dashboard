@@ -22,20 +22,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  adminer:
-    image: adminer:4
-    container_name: bsl-dashboard-adminer
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      - ADMINER_DEFAULT_SERVER=postgres
-    ports:
-      - "127.0.0.1:8282:8080"
-    restart: unless-stopped
-    # 보안: 로컬호스트 바인딩(127.0.0.1)으로 외부 노출 방지
-    security_opt:
-      - no-new-privileges:true
+  # adminer:
+  #   image: adminer:4
+  #   container_name: bsl-dashboard-adminer
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     - ADMINER_DEFAULT_SERVER=postgres
+  #   ports:
+  #     - "127.0.0.1:8282:8080"
+  #   restart: unless-stopped
+  #   # 보안: 로컬호스트 바인딩(127.0.0.1)으로 외부 노출 방지
+  #   security_opt:
+  #     - no-new-privileges:true
 
 volumes:
   bsl-dashboard-postgres_data:
